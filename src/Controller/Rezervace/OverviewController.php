@@ -11,6 +11,6 @@ final class OverviewController extends AbstractController
     #[Route('/rezervace/prehled', name: 'reservations_overview', methods: ['GET'])]
     public function __invoke(): Response
     {
-        return $this->render('reservace/overview.html.twig');
+        return $this->render('rezervace/overview.html.twig');
     }
 }
