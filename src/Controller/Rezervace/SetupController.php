@@ -11,6 +11,6 @@ final class SetupController extends AbstractController
     #[Route('/rezervace/nastaveni', name: 'reservations_setup', methods: ['GET'])]
     public function __invoke(): Response
     {
-        return $this->render('reservace/setup.html.twig');
+        return $this->render('rezervace/setup.html.twig');
     }
 }
