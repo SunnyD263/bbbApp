@@ -1,0 +1,5 @@
+@use "@/styles/_globals.scss" as *;
+// Print rules
+@media print {
+  .header, header, #DeleteID { display: none !important; }
+}

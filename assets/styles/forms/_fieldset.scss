@@ -1,0 +1,22 @@
+@use "@/styles/_globals.scss" as *;
+// Form fieldsets
+fieldset {
+  max-width: 100%;
+
+  legend {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  label {
+    width: 150px;
+    font-size: 15px;
+    display: inline-block;
+  }
+
+  input {
+    width: 200px;
+    font-size: 14px;
+  }
+}

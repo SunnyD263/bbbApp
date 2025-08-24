@@ -1,0 +1,23 @@
+@use "@/styles/_globals.scss" as *;
+// Styles specific to Inventura screens.
+// Scope under <body class="inventura"> to avoid conflicts.
+body.inventura {
+  header h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+
+  .TWOtable {
+    display: flex;
+    justify-content: space-between;
+
+    .TWOtableColumn {
+      flex: 1;
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}

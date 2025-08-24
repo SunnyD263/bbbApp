@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block title %}Výsledek inventury{% endblock %}
+{% block body %}
+  <h2>Výsledek inventury (porovnání)</h2>
+  <p>Počet záznamů: {{ rows|length }}</p>
+  <table border="1" cellpadding="6">
+    <tr>
+      <th>ID</th><th>Produkt</th><th>EAN</th><th>ProdNum</th><th>Barva</th><th>Vel.</th>
+      <th>Datum</th><th>ScanStock</th><th>InvStock</th><th>Stav</th>
+    </tr>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.ean }}</td>
+        <td>{{ r.productNumber }}</td>
+        <td>{{ r.barva }}</td>
+        <td>{{ r.velikost }}</td>
+        <td>{{ r.datum }}</td>
+        <td>{{ r.scanstock }}</td>
+        <td>{{ r.invstock }}</td>
+        <td>{{ r.finalstock }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

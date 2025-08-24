@@ -1,0 +1,38 @@
+<nav>
+  <ul>
+    <li>
+      <a href="#">Rezervace</a>
+      <ul>
+        <li><a href="{{ path('reservations_overview') }}">Přehled rezervací</a></li>
+        <li><a href="{{ path('reservations_setup') }}">Nastavení rezervací</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#">Inventura</a>
+      <ul>
+        <li><a href="{{ path('inventory_import') }}">Import skladové zásoby</a></li>
+        <li><a href="{{ path('inventory_scan') }}">Skenování</a></li>
+        <li><a href="{{ path('inventory_compare') }}">Porovnání</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#">Shoptet</a>
+      <ul>
+        <li><a id="baagl-shoptet" data-source="baagl" href="#">Baagl → Shoptet</a></li>
+        <li><a id="update-shoptet" data-source="update" href="#">Update Shoptetu</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <form id="post-baagl" method="post" action="{{ path('shoptet_post') }}" style="display:none">
+    <input type="hidden" name="source" value="">
+    <input type="hidden" name="_token" value="{{ csrf_token('post_baagl') }}">
+  </form>
+</nav>
+
+
+
+{# Stimulus controller pro JS akce #}
+<div {{ stimulus_controller('menu') }}></div>

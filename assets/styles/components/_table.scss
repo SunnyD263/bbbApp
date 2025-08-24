@@ -1,0 +1,3 @@
+@use "@/styles/_globals.scss" as *;
+// Generic table defaults
+table { @include table-base(); }

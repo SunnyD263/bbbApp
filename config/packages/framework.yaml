@@ -1,6 +1,7 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
+    form: true
 
     # Note that the session will be started ONLY if you read or write from it.
     session: true
@@ -9,7 +10,8 @@ framework:
     #fragments: true
 
 when@test:
-    framework:
+    framework:    
+        form: true
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file

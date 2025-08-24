@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %}Výběr produktu{% endblock %}
+{% block body %}
+  <h2>Výběr produktu pro EAN {{ ean }}</h2>
+  <p>Nalezeno: {{ rows|length }}</p>
+  <table border="1" cellpadding="6">
+    <tr>
+      <th>ID</th><th>Produkt</th><th>EAN</th><th>ProdNum</th><th>Barva</th><th>Vel.</th><th></th>
+    </tr>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.ean }}</td>
+        <td>{{ r.productNumber }}</td>
+        <td>{{ r.barva }}</td>
+        <td>{{ r.velikost }}</td>
+        <td>
+          <form method="post" action="{{ path('inventory_scan_add_id') }}">
+            <input type="hidden" name="id" value="{{ r.id }}">
+            <button type="submit">Vybrat</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <p><a href="{{ path('inventory_scan') }}">← Zpět na skenování</a></p>
+{% endblock %}

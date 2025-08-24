@@ -1,0 +1,3 @@
+// Re-export variables & mixins for convenient single import
+@forward "@/styles/_variables.scss";
+@forward "@/styles/_mixins.scss";
