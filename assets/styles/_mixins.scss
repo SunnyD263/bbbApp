@@ -1,0 +1,33 @@
+// Common mixins
+@use "@/styles/_variables.scss" as vars;
+
+@mixin table-base($border: vars.$border-color) {
+  border-collapse: collapse;
+  margin-bottom: vars.$space-5;
+  border: 2px solid $border;
+  table-layout: auto;
+
+  th, td {
+    border: 2px solid $border;
+    font-size: vars.$font-size-small;
+    padding: vars.$space-1;
+    text-align: left;
+    width: auto;
+  }
+
+  th {
+    background-color: vars.$th-bg;
+  }
+}
+
+@mixin table-compact-cells($border: vars.$border-color) {
+  th, td {
+    padding: vars.$space-3;
+    border: 1px solid $border;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

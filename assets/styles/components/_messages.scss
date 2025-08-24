@@ -1,0 +1,5 @@
+@use "@/styles/_globals.scss" as *;
+// Flash / status messages
+.ErrorMsg { color: $color-error; font-weight: bold; }
+.WarningMsg { color: $color-warning; font-weight: bold; }
+.DoneMsg { color: $color-success; font-weight: bold; }

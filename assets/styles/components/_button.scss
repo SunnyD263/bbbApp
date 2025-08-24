@@ -1,0 +1,15 @@
+@use "@/styles/_globals.scss" as *;
+// Buttons
+button {
+  padding: $space-2 $space-4;
+  background-color: $button-bg;
+  color: $button-fg;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

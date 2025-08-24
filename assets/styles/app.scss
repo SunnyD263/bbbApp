@@ -1,0 +1,14 @@
+// Base app stylesheet (modern Sass)
+@use "@/styles/_globals.scss" as *;
+
+@use "@/styles/components/messages";
+@use "@/styles/components/table";
+@use "@/styles/components/button";
+@use "@/styles/components/navbar";
+
+@use "@/styles/forms/fieldset";
+@use "@/styles/layout/print";
+
+// Page-scoped styles
+@use "@/styles/pages/inventura";
+@use "@/styles/pages/rezervace";

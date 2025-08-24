@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mapování kategorií{% endblock %}
+{% block body %}
+  <h2>Mapování kategorií</h2>
+  <form method="post">
+    <input name="source" placeholder="Zdrojová kategorie" required>
+    <input name="shoptet_id" type="number" placeholder="Shoptet ID">
+    <input name="shoptet_path" placeholder="Shoptet cesta (volitelné)">
+    <button type="submit">Přidat</button>
+  </form>
+
+  <table border="1" cellpadding="6" style="margin-top:10px">
+    <tr><th>ID</th><th>Source</th><th>Shoptet ID</th><th>Path</th></tr>
+    {% for r in rows %}
+      <tr><td>{{ r.id }}</td><td>{{ r.source }}</td><td>{{ r.shoptet_id }}</td><td>{{ r.shoptet_path }}</td></tr>
+    {% endfor %}
+  </table>
+{% endblock %}
+

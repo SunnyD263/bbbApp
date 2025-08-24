@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1>Import inventury</h1>
+
+  {# flash zprávy #}
+  {% for label, messages in app.flashes %}
+    {% for msg in messages %}
+      <div class="alert alert-{{ label }}">{{ msg }}</div>
+    {% endfor %}
+  {% endfor %}
+
+  <form method="post" action="{{ path('inventory_import') }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('inventory_import') }}">
+    <button type="submit" class="btn btn-primary">
+      Importovat
+    </button>
+  </form>
+{% endblock %}

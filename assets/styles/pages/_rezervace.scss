@@ -1,0 +1,19 @@
+@use "@/styles/_globals.scss" as *;
+// Styles specific to Rezervace screens.
+// Scope under <body class="rezervace"> to avoid conflicts.
+body.rezervace {
+  table {
+    width: auto;
+    max-width: 100%;
+    table-layout: auto;
+
+    // Make cells compact with ellipsis
+    @include table-compact-cells();
+  }
+
+  th {
+    background-color: $th-bg;
+  }
+
+  input[type="checkbox"] { margin: 0; }
+}

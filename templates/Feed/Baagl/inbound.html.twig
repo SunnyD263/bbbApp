@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}{% block title %}Inbound{% endblock %}
+{% block body %}
+  <h2>Inbound (posledních {{ rows|length }})</h2>
+  <form method="get"><input name="q" value="{{ q }}" placeholder="hledat SKU/EAN/název"><button>Hledat</button></form>
+  <table border="1" cellpadding="6"><tr><th>ID</th><th>SKU</th><th>Název</th><th>EAN</th><th>Size</th><th>NC€</th><th>PC€</th><th>PC Kč</th><th>Kat</th></tr>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.id }}</td><td>{{ r.artikl }}</td><td>{{ r.name }}</td><td>{{ r.ean }}</td>
+        <td>{{ r.size_label }}</td><td>{{ r.nc_eur }}</td><td>{{ r.pc_eur }}</td>
+        <td>{{ r.pc_czk_vat }}</td><td>{{ r.category_src }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
