@@ -16,5 +16,6 @@ export default class extends Controller {
 
     attach('baagl-shoptet');
     attach('update-shoptet');
+    attach('missing-shoptet');
   }
 }

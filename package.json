@@ -3,7 +3,7 @@
   "type": "module",
   "devDependencies": {
     "vite": "^5.4.0",
-    "@symfony/vite-plugin": "^5.0.0",
+    "vite-plugin-symfony": "^8.0.0",
     "sass": "^1.77.0"
   },
   "scripts": {
