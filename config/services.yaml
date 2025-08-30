@@ -10,7 +10,30 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        
+    # Form <-> Validator glue (bez toho neexistuje volba "constraints")
+    Symfony\Component\Form\Extension\Validator\ValidatorExtension:
+        arguments: ['@validator']
+        tags: ['form.extension']
 
+    # Definuje volbu "constraints" na všech polích
+    Symfony\Component\Form\Extension\Validator\Type\FormTypeValidatorExtension:
+        tags: ['form.type_extension']
+
+    # (volitelné, ale doporučené – validace submitu/repeated/upload)
+    Symfony\Component\Form\Extension\Validator\Type\RepeatedTypeValidatorExtension:
+        tags: ['form.type_extension']
+
+    Symfony\Component\Form\Extension\Validator\Type\SubmitTypeValidatorExtension:
+        tags: ['form.type_extension']
+
+    Symfony\Component\Form\Extension\Validator\Type\UploadValidatorExtension:
+        tags: ['form.type_extension']
+
+    # Guesser mapující constraints z atributů/metadata tříd (volitelné)
+    Symfony\Component\Form\Extension\Validator\ValidatorTypeGuesser:
+        arguments: ['@validator.mapping.class_metadata_factory']
+        tags: ['form.type_guesser']
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:

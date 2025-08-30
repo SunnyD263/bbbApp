@@ -1,36 +1,80 @@
 <?php
+
 namespace App\Controller\Feed\Baagl;
 
-use App\Service\Db;
+use App\Entity\Baagl\BaaglInbound;
+use App\Form\Baagl\InboundUploadType;
+use App\Service\Baagl\BaaglInboundImporter;
+use App\Service\Baagl\BaaglInboundParser;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 final class InboundController extends AbstractController
 {
-    #[Route('/Feed/Baagl/inbound', name: 'inbound_index', methods: ['GET'])]
-    public function index(Request $r, Db $db): Response
-    {
-        $q = trim((string)$r->query->get('q',''));
-        $sql = 'SELECT * FROM baagl_inbound';
-        $par = [];
-        if ($q !== '') { $sql .= ' WHERE artikl LIKE :q OR ean LIKE :q OR name LIKE :q'; $par['q'] = '%'.$q.'%'; }
-        $sql .= ' ORDER BY id DESC LIMIT 200';
-        $rows = $db->select($sql, $par);
-        return $this->render('Feed/Baagl/inbound.html.twig', ['rows'=>$rows, 'q'=>$q]);
-    }
+    #[Route('/feed/baagl/inbound', name: 'inbound_shoptet', methods: ['GET','POST'])]
+    public function shoptet(
+        Request $request,
+        BaaglInboundParser $parser,
+        BaaglInboundImporter $importer,
+        EntityManagerInterface $em
+    ): Response {
+        $q = trim((string) $request->query->get('q', ''));
 
-    #[Route('/shoptet/missing', name: 'inbound_missing', methods: ['GET'])]
-    public function missing(Db $db): Response
-    {
-        $rows = $db->select(
-          'SELECT i.*
-             FROM baagl_inbound i
-             LEFT JOIN category c ON c.source = i.category_src
-            WHERE (c.id IS NULL) OR (COALESCE(i.pc_czk_vat,0)=0 AND COALESCE(i.pc_eur,0)=0)
-            ORDER BY i.id DESC'
-        );
-        return $this->render('Feed/Baagl/missing.html.twig', ['rows'=>$rows]);
+        // seznam pro tabulku
+        $repo = $em->getRepository(BaaglInbound::class);
+        $qb = $repo->createQueryBuilder('b')->orderBy('b.id','asc')->setMaxResults(1000);
+        if ($q !== '') {
+            $qb->andWhere('b.code LIKE :q OR b.nazev LIKE :q')->setParameter('q', "%{$q}%");
+        }
+        $rows = $qb->getQuery()->getResult();
+
+        // formulář
+        $form = $this->createForm(InboundUploadType::class);
+        $form->handleRequest($request);
+
+        $result = null;
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                /** @var \Symfony\Component\HttpFoundation\File\UploadedFile|null $file */
+                $file = $form->get('html_file')->getData();
+                if (!$file) {
+                    $this->addFlash('error', 'Soubor nebyl nahrán.');
+                } else {
+                    try {
+                        $html   = file_get_contents($file->getPathname());
+                        $result = $parser->parseHtml($html);
+
+                        $inserted = $importer->rebuildAndInsertFromItems($result['items'] ?? []);
+
+                        $this->addFlash('success', sprintf(
+                            'Tabulka obnovena (DROP/CREATE), vloženo %d položek. Množství: %d, suma s DPH: %s',
+                            $inserted,
+                            (int)($result['sumQty'] ?? 0),
+                            number_format((float)($result['sumPrice'] ?? 0), 2, ',', ' ')
+                        ));
+
+                        return $this->redirectToRoute('inbound_shoptet');
+                    } catch (\Throwable $e) {
+                        $this->addFlash('error', 'Zpracování selhalo: '.$e->getMessage());
+                    }
+                }
+            } else {
+                foreach ($form->getErrors(true, true) as $err) {
+                    $this->addFlash('error', $err->getMessage());
+                }
+            }
+        }
+
+        return $this->render('feed/baagl/inbound.html.twig', [
+            'q'      => $q,
+            'rows'   => $rows,
+            'form'   => $form->createView(),
+            'result' => $result,
+        ]);
     }
 }

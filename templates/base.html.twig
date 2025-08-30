@@ -5,7 +5,7 @@
   <title>{% block title %}BabyBeBare App{% endblock %}</title>
   <meta name="author" content="Jan Sonbol">
   <meta name="description" content="{% block meta_desc %}{% endblock %}">
-  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {{ vite_entry_link_tags('app') }} {# CSS odkazy z Vite (prod) #}
   {# pokud používáš jQuery jako v původním souboru #}
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
 </head>
@@ -17,7 +17,6 @@
   <main>{% block body %}{% endblock %}</main>
 
   {% block javascripts %}
-    {{ vite_entry_script_tags('app') }}
     {{ vite_entry_script_tags('app') }}
   {% endblock %}
 </body>

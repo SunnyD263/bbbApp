@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class ImportController extends AbstractController
 {
-    #[Route('/Feed/Baagl/import', name: 'baagl_import', methods: ['GET','POST'])]
+    #[Route('/feed/baagl/import', name: 'baagl_import', methods: ['GET','POST'])]
     public function __invoke(Request $r, Db $db): Response
     {
     // pevně daný URL souboru
