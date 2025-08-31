@@ -20,21 +20,11 @@
     <li>
       <a href="#">Shoptet</a>
       <ul>
-        <li><a id="baagl-shoptet" data-source="baagl" href="#">Baagl → Shoptet</a></li>
-        <li><a id="update-shoptet" data-source="update" href="#">Update Shoptetu</a></li>
-        <li><a href="{{ path('inbound_shoptet') }}">Naskladnění na Shoptet</a></li>
-        <li><a id="missing-shoptet" data-source="missing" href="#">Dohrání produktu</a></li>
+        <li><a href="{{ path('import_baagl') }}">Nový Baagl na Shoptet</a></li>
+        <li><a href="{{ path('update_baagl') }}">Update Baagl ne Shoptetu</a></li>
+        <li><a href="{{ path('inbound_baagl') }}">Naskladnění na Shoptet</a></li>
+        <li><a href="{{ path('missing_baagl') }}">Dohrání chybějících z naskladnění</a></li>
       </ul>
     </li>
   </ul>
-
-  <form id="post-baagl" method="post" action="{{ path('shoptet_post') }}" style="display:none">
-    <input type="hidden" name="source" value="">
-    <input type="hidden" name="_token" value="{{ csrf_token('post_baagl') }}">
-  </form>
 </nav>
-
-
-
-{# Stimulus controller pro JS akce #}
-<div {{ stimulus_controller('menu') }}></div>

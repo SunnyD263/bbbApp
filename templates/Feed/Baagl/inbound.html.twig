@@ -10,11 +10,23 @@
   {# form_start nastaví enctype sám, když je ve formu FileType #}
   {{ form_start(form) }}
     {{ form_row(form.html_file) }}
+    <br>
     <button class="btn">Načíst</button>
   {{ form_end(form) }}
 
+    <br>
+
   {% if result is defined and result %}
     <div class="mt-6">
+
+      {{ form_start(form) }}
+        <button class="btn">Generovat</button>
+      {{ form_end(form) }}
+      
+      <br>
+      <h3>Počet kusů objednávky - {{ result.sumQty }} položek</h3>
+      <h3>Hodnota objednávky s DPH - {{ result.sumPrice|number_format(2, ',', ' ') }} Kč</h3>
+
       <button onclick="const e=document.getElementById('orderDetails'); e.style.display = (e.style.display==='none' ? 'block' : 'none');">
         Zobrazit / skrýt detaily
       </button>
@@ -24,7 +36,7 @@
           <thead>
             <tr>
               <th>Kód</th><th>Název</th><th>MJ</th><th>Množství</th>
-              <th>Cena bez DPH</th><th>Cena s DPH</th><th>Součet s DPH</th><th>Měna</th>
+              <th>Cena bez DPH</th><th>Daň</th><th>Cena s DPH</th><th>Součet s DPH</th><th>Měna</th>
             </tr>
           </thead>
           <tbody>
@@ -35,6 +47,7 @@
               <td>{{ item.uom }}</td>
               <td>{{ item.qty }}</td>
               <td>{{ item.priceWithoutVat|number_format(2, ',', ' ') }}</td>
+              <td>{{ item.priceWithoutVat|number_format(2, ',', ' ') }}
               <td>{{ item.priceVat|number_format(2, ',', ' ') }}</td>
               <td>{{ item.priceVatSum|number_format(2, ',', ' ') }}</td>
               <td>{{ item.currency }}</td>
@@ -49,6 +62,7 @@
               <td><strong>{{ result.sumQty }}</strong></td>
               <td></td>
               <td></td>
+              <td></td>
               <td><strong>{{ result.sumPrice|number_format(2, ',', ' ') }}</strong></td>
               <td></td>
             </tr>
@@ -58,29 +72,15 @@
     </div>
   {% endif %}
 
-  <hr>
-  <form method="get">
-    <input name="q" value="{{ q }}" placeholder="hledat SKU/EAN/název">
-    <button>Hledat</button>
-  </form>
+{% endblock %}
 
-  <table border="1" cellpadding="6">
-    <tr>
-      <th>ID</th><th>Kód</th><th>Název</th><th>MJ</th><th>Množství</th><th>Nákup bez DPH</th><th>Nákup s DPH</th><th>Měna</th>
-    </tr>
-    {% for r in rows %}
-      <tr>
-        <td>{{ r.id }}</td>
-        <td>{{ r.code }}</td>
-        <td>{{ r.nazev }}</td>
-        <td>{{ r.uom }}</td>
-        <td>{{ r.stav }}</td>
-        <td>{{ r.nakupBezDph }}</td>
-        <td>{{ r.nakupDph }}</td>
-        <td>{{ r.mena }}</td>
-      </tr>
-    {% else %}
-      <tr><td colspan="8">Žádná data.</td></tr>
-    {% endfor %}
-  </table>
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    (function () {
+      const rows   = {{ rowsJson|default('[]')|raw }};
+      const result = {{ resultJson|default('null')|raw }};
+      console.log('result (debug group):', result);
+    })();
+  </script>
 {% endblock %}

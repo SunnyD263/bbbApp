@@ -6,6 +6,7 @@
   <meta name="author" content="Jan Sonbol">
   <meta name="description" content="{% block meta_desc %}{% endblock %}">
     {{ vite_entry_link_tags('app') }} {# CSS odkazy z Vite (prod) #}
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/ico">
   {# pokud používáš jQuery jako v původním souboru #}
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
 </head>
@@ -19,5 +20,14 @@
   {% block javascripts %}
     {{ vite_entry_script_tags('app') }}
   {% endblock %}
+
+  {% for label, messages in app.flashes %}
+    <script>
+      {% for msg in messages %}
+        console.{{ label == 'error' ? 'error' : 'log' }}({{ msg|json_encode|raw }});
+      {% endfor %}
+    </script>
+  {% endfor %}
+  
 </body>
 </html>

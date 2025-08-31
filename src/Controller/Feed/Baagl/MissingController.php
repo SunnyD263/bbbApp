@@ -7,9 +7,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-final class ImportController extends AbstractController
+final class MissingController extends AbstractController
 {
-    #[Route('/feed/baagl/import', name: 'import_baagl', methods: ['GET','POST'])]
+    #[Route('/feed/baagl/missing', name: 'missing_baagl', methods: ['GET','POST'])]
     public function __invoke(XmlFeedClient $client): JsonResponse
     {
         $xml = $client->fetchSimpleXml('https://example.com/feed.xml', xsdPath: null);
