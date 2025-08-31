@@ -41,17 +41,8 @@ class BaaglInboundParser
                 $withoutVatCurrency = trim($mm[2]);
             }
 
-            // množství – např. „12 ks“
-            $qtyText = trim($cells->item(2)->nodeValue);
-            $qtyValue = 0;
-            $qtyUom = '';
-            if (preg_match('/^(-?\d+)\s*([^\d\s]+)?$/u', $qtyText, $mm)) {
-                $qtyValue = (int) $mm[1];
-                $qtyUom = isset($mm[2]) ? trim($mm[2]) : '';
-            }
-
             // cena s DPH (jednotková)
-            $priceVatText = trim($cells->item(3)->nodeValue);
+            $priceVatText = trim($cells->item(2)->nodeValue);
             $priceVat = 0.0;
             $priceVatCurrency = '';
             if (preg_match('/^([\d\s]+,\d{2})\s*([^\d\s]+)$/u', $priceVatText, $mm)) {
@@ -59,8 +50,24 @@ class BaaglInboundParser
                 $priceVatCurrency = trim($mm[2]);
             }
 
+            // množství – např. „12 ks“
+            $qtyText = trim($cells->item(3)->nodeValue);
+            $qtyValue = 0;
+            $qtyUom = '';
+            if (preg_match('/^(-?\d+)\s*([^\d\s]+)?$/u', $qtyText, $mm)) {
+                $qtyValue = (int) $mm[1];
+                $qtyUom = isset($mm[2]) ? trim($mm[2]) : '';
+            }
+
+            $taxText = trim($cells->item(4)->nodeValue);
+            $tax = 0;
+
+            if (preg_match('/^([\d\s]+)\s*([^\d\s]+)$/u', $taxText, $match)) {
+                $tax = (int) str_replace(' ', '', $match[1]);
+            }
+
             // cena s DPH (součet)
-            $priceVatSumText = trim($cells->item(4)->nodeValue);
+            $priceVatSumText = trim($cells->item(5)->nodeValue);
             $priceVatSum = 0.0;
             $priceVatSumCurrency = '';
             if (preg_match('/^([\d\s]+,\d{2})\s*([^\d\s]+)$/u', $priceVatSumText, $mm)) {
@@ -74,6 +81,7 @@ class BaaglInboundParser
                 'uom' => $qtyUom,
                 'qty' => $qtyValue,
                 'currency' => $priceVatCurrency ?: $withoutVatCurrency ?: $priceVatSumCurrency,
+                'tax' => $tax,
                 'priceWithoutVat' => $withoutVatPrice,
                 'priceVat' => $priceVat,
                 'priceVatSum' => $priceVatSum,

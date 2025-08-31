@@ -12,25 +12,18 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class InboundController extends AbstractController
 {
-    #[Route('/feed/baagl/inbound', name: 'inbound_shoptet', methods: ['GET','POST'])]
-    public function shoptet(
+    #[Route('/feed/baagl/inbound', name: 'inbound_baagl', methods: ['GET','POST'])]
+    public function inboundBaagl(
         Request $request,
         BaaglInboundParser $parser,
         BaaglInboundImporter $importer,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        SerializerInterface $serializer
     ): Response {
-        $q = trim((string) $request->query->get('q', ''));
-
-        // seznam pro tabulku
-        $repo = $em->getRepository(BaaglInbound::class);
-        $qb = $repo->createQueryBuilder('b')->orderBy('b.id','asc')->setMaxResults(1000);
-        if ($q !== '') {
-            $qb->andWhere('b.code LIKE :q OR b.nazev LIKE :q')->setParameter('q', "%{$q}%");
-        }
-        $rows = $qb->getQuery()->getResult();
 
         // formulář
         $form = $this->createForm(InboundUploadType::class);
@@ -40,25 +33,32 @@ final class InboundController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                /** @var \Symfony\Component\HttpFoundation\File\UploadedFile|null $file */
+                /** @var UploadedFile|null $file */
                 $file = $form->get('html_file')->getData();
                 if (!$file) {
                     $this->addFlash('error', 'Soubor nebyl nahrán.');
                 } else {
                     try {
+                                
+                        if ($request->isMethod('GET')) {
+                            $importer->rebuild(); // TRUNCATE/DELETE
+                        }
                         $html   = file_get_contents($file->getPathname());
                         $result = $parser->parseHtml($html);
 
-                        $inserted = $importer->rebuildAndInsertFromItems($result['items'] ?? []);
+                        // --- VLOŽENÍ BEZ MAZÁNÍ (mazání bylo na GET) ---
+                        $inserted = $importer->insertFromItems($result['items'] ?? []);
 
                         $this->addFlash('success', sprintf(
-                            'Tabulka obnovena (DROP/CREATE), vloženo %d položek. Množství: %d, suma s DPH: %s',
+                            'Načtení položek objednávky. Vloženo %d položek. Množství: %d, suma s DPH: %s',
                             $inserted,
                             (int)($result['sumQty'] ?? 0),
                             number_format((float)($result['sumPrice'] ?? 0), 2, ',', ' ')
                         ));
 
-                        return $this->redirectToRoute('inbound_shoptet');
+                        $this->addFlash('baagl_result', $result);
+
+                        return $this->redirectToRoute('inbound_baagl');
                     } catch (\Throwable $e) {
                         $this->addFlash('error', 'Zpracování selhalo: '.$e->getMessage());
                     }
@@ -70,11 +70,18 @@ final class InboundController extends AbstractController
             }
         }
 
+        $flashResult = $request->getSession()->getFlashBag()->get('baagl_result');
+        if (!empty($flashResult)) {
+            $result = $flashResult[0];
+        }
+
+        // JSON do konzole
+        $resultJson = $serializer->serialize($result, 'json', ['groups' => ['debug']]);
+
         return $this->render('feed/baagl/inbound.html.twig', [
-            'q'      => $q,
-            'rows'   => $rows,
-            'form'   => $form->createView(),
-            'result' => $result,
+            'form'       => $form->createView(),
+            'result'     => $result,
+            'resultJson' => $resultJson,
         ]);
     }
 }
