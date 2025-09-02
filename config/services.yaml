@@ -49,13 +49,21 @@ services:
             $conn: '@doctrine.dbal.default_connection'
             $logger: '@?logger' # volitelné; smaž řádek, pokud logger nechceš
             
+    # úložiště pro HTTP cache (adresář si klidně změň)
+    Symfony\Component\HttpKernel\HttpCache\Store:
+        arguments:
+            - '%kernel.cache_dir%/http_client' # např. var/cache/dev/http_client
+        public: false
+
+    # zabalí defaultní http_client do CachingHttpClient
     http_client.cached:
         class: Symfony\Component\HttpClient\CachingHttpClient
+        decorates: 'http_client'
         arguments:
-        - '@http_client'   # výchozí Symfony HttpClient
-        - '@cache.app'
-        - { default_ttl: 600 } # 10 min; můžeš upravit
+            - '@http_client.cached.inner'
+            - '@Symfony\Component\HttpKernel\HttpCache\Store'
+        public: false
 
     App\Service\XmlFeedClient:
         arguments:
-        $http: '@http_client.cached'  # injektuj cached klient
+            $http: '@http_client'
