@@ -3,94 +3,122 @@
 namespace App\Entity\Baagl;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'baagl_import')]
+#[ORM\Table(name: 'baagl')]
 class BaaglImport
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['debug'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(name: 'skupinaID', length: 50, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $skupinaID = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(name: 'skupina', length: 50, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $skupina = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(name: 'skupina_zbozi',length: 50, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $skupinaZbozi = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $code = null;
 
     #[ORM\Column(name: 'catId', length: 50, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $catId = null;
 
     #[ORM\Column(name: 'catName', length: 255, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $catName = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(name: 'ean', length: 50, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $ean = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(name: 'nazev', type: 'text', nullable: true)]
+    #[Groups(['debug'])]
     private ?string $nazev = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(name: 'popis', type: 'text', nullable: true)]
+    #[Groups(['debug'])]
     private ?string $popis = null;
 
     // decimály držím jako stringy (bez ztráty přesnosti)
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 1, nullable: true)]
+    #[ORM\Column(name: 'sirka', type: 'decimal', precision: 10, scale: 1, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $sirka = null;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 1, nullable: true)]
+    #[ORM\Column(name: 'vyska', type: 'decimal', precision: 10, scale: 1, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $vyska = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 1, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $hloubka = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $barva = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $baleni = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $material = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $hmotnost = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 1, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $nosnost = null;
 
     #[ORM\Column(length: 10, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $uom = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['debug'])]
     private ?int $stav = null;
 
     #[ORM\Column(name: 'stav_po_doplneni', type: 'integer', nullable: true)]
+    #[Groups(['debug'])]
     private ?int $stavPoDoplneni = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['debug'])]    
     private ?int $dph = null;
 
     #[ORM\Column(length: 10, nullable: true)]
+    #[Groups(['debug'])]    
     private ?string $mena = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    #[Groups(['debug'])]    
     private ?string $cena = null;
 
     #[ORM\Column(name: 'nakupni_cena', type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $nakupniCena = null;
 
     // „doporučená maloobchodní cena“ – v tabulce je sloupec dmoc_cena
     #[ORM\Column(name: 'dmoc_cena', type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $dmocCena = null;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    #[Groups(['debug'])]
     private ?string $sleva = null;
 
     // obrázky 1–20
@@ -103,7 +131,7 @@ class BaaglImport
     #[ORM\Column(type: 'text', nullable: true)] private ?string $obrazek7 = null;
     #[ORM\Column(type: 'text', nullable: true)] private ?string $obrazek8 = null;
     #[ORM\Column(type: 'text', nullable: true)] private ?string $obrazek9 = null;
-    #[ORM_COLUMN(type: 'text', nullable: true)] private ?string $obrazek10 = null;
+    #[ORM\Column(type: 'text', nullable: true)] private ?string $obrazek10 = null;
     #[ORM\Column(type: 'text', nullable: true)] private ?string $obrazek11 = null;
     #[ORM\Column(type: 'text', nullable: true)] private ?string $obrazek12 = null;
     #[ORM\Column(type: 'text', nullable: true)] private ?string $obrazek13 = null;

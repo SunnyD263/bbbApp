@@ -4,7 +4,7 @@ namespace App\Controller\Feed\Baagl;
 
 use App\Entity\Baagl\BaaglInbound;
 use App\Form\Baagl\InboundUploadType;
-use App\Service\Baagl\BaaglInboundImporter;
+use App\Service\Baagl\BaaglInboundTable;
 use App\Service\Baagl\BaaglInboundParser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +20,7 @@ final class InboundController extends AbstractController
     public function inboundBaagl(
         Request $request,
         BaaglInboundParser $parser,
-        BaaglInboundImporter $importer,
+        BaaglInboundTable $importer,
         EntityManagerInterface $em,
         SerializerInterface $serializer
     ): Response {
@@ -41,12 +41,16 @@ final class InboundController extends AbstractController
                     try {
                                 
                         if ($request->isMethod('GET')) {
+
+                        //***\src\Service\Baagl\BaaglInboundTable.php***
                             $importer->rebuild(); // TRUNCATE/DELETE
                         }
                         $html   = file_get_contents($file->getPathname());
+
+                        //***\src\Service\Baagl\BaaglInboundParser.php***
                         $result = $parser->parseHtml($html);
 
-                        // --- VLOŽENÍ BEZ MAZÁNÍ (mazání bylo na GET) ---
+                         //***\src\Service\Baagl\BaaglInboundTable.php***
                         $inserted = $importer->insertFromItems($result['items'] ?? []);
 
                         $this->addFlash('success', sprintf(

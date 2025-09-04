@@ -4,6 +4,15 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    feed.urls:
+        all: '%env(FEED_ALL_URL)%'
+        inStock: '%env(FEED_INSTOCK_URL)%'
+        shoptet: '%env(SHOPPET_FEED_URL)%'
+
+    feed.max_bytes: '%env(int:FEED_MAX_BYTES)%'
+    baagl.legacy_category_php: '%kernel.project_dir%/var/baagl/category.php'
+    baagl.ignore_regnum_path:  '%kernel.project_dir%/var/baagl/ignore_regnum.txt'
+    baagl.image_slots:         21
 
 services:
     # default configuration for services in *this* file
@@ -41,13 +50,6 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
-
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
-    App\Db\Db:
-        arguments:
-            $conn: '@doctrine.dbal.default_connection'
-            $logger: '@?logger' # volitelné; smaž řádek, pokud logger nechceš
             
     # úložiště pro HTTP cache (adresář si klidně změň)
     Symfony\Component\HttpKernel\HttpCache\Store:
@@ -67,3 +69,28 @@ services:
     App\Service\XmlFeedClient:
         arguments:
             $http: '@http_client'
+            $cache: '@cache.app'
+            $logger: '@logger'
+            $maxBytesDefault: '%feed.max_bytes%'
+
+    App\Service\FeedRegistry:
+        calls:
+        - [ set, [ 'all', '%env(string:FEED_ALL_URL)%' ] ]
+        - [ set, [ 'instock', '%env(string:FEED_INSTOCK_URL)%' ] ]
+        - [ set, [ 'shoptet', '%env(string:SHOPPET_FEED_URL)%' ] ]
+
+    App\Service\FeedProvider:
+        arguments:
+            $client: '@App\Service\XmlFeedClient'
+            $registry: '@App\Service\FeedRegistry'
+
+    App\Service\Baagl\BaaglItemNormalizer:
+        arguments:
+            $ignoreRegnumPath: '%baagl.ignore_regnum_path%'
+            $imageSlots: '%baagl.image_slots%'
+
+    App\Service\Baagl\LegacyCategoryResolver:
+        arguments:
+            $legacyFilePath: '%baagl.legacy_category_php%'
+    
+    App\Service\Baagl\BaaglShoptetUpdater: ~ 

@@ -1,0 +1,765 @@
+<CATEGORIES>
+<!--  Školní potřeby  -->    
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Aktovky</NAME>
+        <GROUP_ID>39</GROUP_ID>
+        <EXT_ID>160</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1159</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Aktovky</NAME>
+        <GROUP_ID>39</GROUP_ID>
+        <EXT_ID>173</EXT_ID>
+        <SORT_ID>4</SORT_ID>
+        <SHOPTET_ID>1159</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Batohy &gt; Školní batohy</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>160</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1288</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Batohy &gt; Školní batohy</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>161</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1288</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Batohy &gt; Předškolní batohy</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>161</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1162</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Batohy &gt; Studentské batohy &gt; Batohy Standard</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>171</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1420</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Batohy &gt; Studentské batohy &gt; Batohy Standard</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>161</EXT_ID>
+        <SORT_ID>4</SORT_ID>
+        <SHOPTET_ID>1420</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Batohy &gt; Studentské batohy &gt; Batohy Roll</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>171</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1423</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Batohy &gt; Studentské batohy &gt; Batohy Roll</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>161</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1423</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Batohy &gt; Studentské batohy &gt; Batohy Track</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>161</EXT_ID>
+        <SORT_ID>5</SORT_ID>
+        <SHOPTET_ID>1426</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Školní sety &gt; Školní sety - 2pack</NAME>
+        <GROUP_ID>63</GROUP_ID>
+        <EXT_ID>173</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1429</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Školní sety &gt; Školní sety - 3pack</NAME>
+        <GROUP_ID>63</GROUP_ID>
+        <EXT_ID>162</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1291</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Školní sety &gt; Školní sety - 3pack</NAME>
+        <GROUP_ID>63</GROUP_ID>
+        <EXT_ID>173</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1291</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Školní sety &gt; Školní sety - 5pack</NAME>
+        <GROUP_ID>63</GROUP_ID>
+        <EXT_ID>162</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1294</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Penály &gt; Školní penály jednopatrový</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>163</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1297</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Penály &gt; Školní penály jednopatrový</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>173</EXT_ID>
+        <SORT_ID>5</SORT_ID>
+        <SHOPTET_ID>1297</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Penály &gt; Školní penály dvoupatrový</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>163</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1300</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Penály &gt; Školní penály třípatrový</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>163</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1303</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Penály &gt; Školní etue</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>163</EXT_ID>
+        <SORT_ID>4</SORT_ID>
+        <SHOPTET_ID>1306</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Penály &gt; Studentská etue</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>163</EXT_ID>
+        <SORT_ID>5</SORT_ID>
+        <SHOPTET_ID>1309</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Penály &gt; Studentská pouzdra</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>163</EXT_ID>
+        <SORT_ID>6</SORT_ID>
+        <SHOPTET_ID>1309</SHOPTET_ID>
+    </CATEGORY>
+        <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Sáčky na obuv &gt; Předškolní sáčky na obuv</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>164</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1315</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Sáčky na obuv &gt; Školní sáčky na obuv</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>164</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1318</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Sáčky na obuv &gt; Školní sáčky na obuv</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>173</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1318</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Sáčky na obuv &gt; Školní sáčky na obuv s kapsou</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>164</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1321</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Peněženky &gt; Peněženky na krk</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>165</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1327</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Peněženky &gt; Dětské peněženky</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>165</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1324</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Peněženky &gt; Studentské peněženky</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>165</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1330</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Školní desky &gt; Školní desky A5</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>166</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1336</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Školní desky &gt; Školní desky A4</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>166</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1333</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Školní desky &gt; Školní desky A4 Jumbo</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>166</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1339</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Láhve na pití &gt; Láhve na pití s náustkem &gt; Láhve na pití 350ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>31</SORT_ID>        
+        <SHOPTET_ID>1363</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Láhve na pití &gt; Láhve na pití s náustkem &gt; Láhve na pití 500ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>32</SORT_ID>        
+        <SHOPTET_ID>1366</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Láhve na pití &gt; Láhve na pití s náustkem &gt; Láhve na pití 700ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>33</SORT_ID>        
+        <SHOPTET_ID>1369</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Láhve na pití &gt; Láhve na pití s náustkem &gt; Láhve na pití 800ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>34</SORT_ID>        
+        <SHOPTET_ID>1372</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Láhve na pití &gt; Láhve na pití s brčkem &gt; Láhve na pití 500ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>35</SORT_ID>        
+        <SHOPTET_ID>1375</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Termoláhve &gt; Termoláhve klasické &gt; Termoláhve 450ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>36</SORT_ID>        
+        <SHOPTET_ID>1387</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Termoláhve &gt; Termoláhve klasické &gt; Termoláhve 550ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>37</SORT_ID>        
+        <SHOPTET_ID>1390</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Termoláhve &gt; Termoláhve s bambusovým víčkem &gt; Termoláhve 500ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>38</SORT_ID>        
+        <SHOPTET_ID>1393</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Termoláhve &gt; Termoláhve s kovovým víčkem &gt; Termoláhve 500ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>39</SORT_ID>        
+        <SHOPTET_ID>1396</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Láhve na pití, termoláhve &gt; Termoláhve &gt; Termoláhve s kovovým víčkem &gt; Termoláhve 500ml</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>39</SORT_ID>        
+        <SHOPTET_ID>1396</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Boxy na svačinu &gt; Boxy na svačinu obyčejné</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>167</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1342</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Boxy na svačinu &gt; Boxy na svačinu s přihrádkami</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>167</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1345</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Boxy na svačinu &gt; Boxy na svačinu čtyři v jednom</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>167</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1348</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Kufříky</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1189</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Pláštěnky &gt; Pláštěnky vel. S</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>60</SORT_ID>
+        <SHOPTET_ID>1462</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Pláštěnky &gt; Pláštěnky vel. XS</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>61</SORT_ID>
+        <SHOPTET_ID>1459</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Pláštěnky &gt; Pláštěnky vel. M</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>62</SORT_ID>
+        <SHOPTET_ID>1405</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Pláštěnky &gt; Pláštěnky vel. L</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>63</SORT_ID>
+        <SHOPTET_ID>1411</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Pláštěnky &gt; Pláštěnky vel. XL</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>64</SORT_ID>
+        <SHOPTET_ID>1408</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Pláštěnky &gt; Pláštěnka na školní aktovku</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>65</SORT_ID>
+        <SHOPTET_ID>1414</SHOPTET_ID>
+    </CATEGORY> 
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Sportovní tašky</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>4</SORT_ID>
+        <SHOPTET_ID>1195</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Ledvinky</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>171</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1198</SHOPTET_ID>
+    </CATEGORY> 
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Ledvinky</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>7</SORT_ID>
+        <SHOPTET_ID>1198</SHOPTET_ID>
+    </CATEGORY> 
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Dětské zástěrky</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>8</SORT_ID>
+        <SHOPTET_ID>1207</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Klíčenky</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>5</SORT_ID>
+        <SHOPTET_ID>1210</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Ostatní</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>168</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1204</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Školní potřeby &gt; Ostatní</NAME>
+        <GROUP_ID>4</GROUP_ID>
+        <EXT_ID>101</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1204</SHOPTET_ID>
+    </CATEGORY>
+
+
+
+<!--  Notesy, kalendáře, diáře  -->
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Notesy</NAME>
+        <GROUP_ID>3</GROUP_ID>
+        <EXT_ID>134</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1231</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Notesy</NAME>
+        <GROUP_ID>3</GROUP_ID>
+        <EXT_ID>135</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1231</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Notesy</NAME>
+        <GROUP_ID>3</GROUP_ID>
+        <EXT_ID>136</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1231</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Notesy</NAME>
+        <GROUP_ID>2</GROUP_ID>
+        <EXT_ID>105</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1231</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Bloky</NAME>
+        <GROUP_ID>3</GROUP_ID>
+        <EXT_ID>136</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1234</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Kalendáře &gt; Poznámkový kalendáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>101</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1255</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Kalendáře &gt; Nástěnný kalendáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>103</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1261</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Kalendáře &gt; Nástěnný kalendáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>108</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1261</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Kalendáře &gt; Nástěnný kalendáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>108</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1261</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Kalendáře &gt; Stolní kalendáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>107</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1264</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Kalendáře &gt; Rodinné kalendáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>101</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1255</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Kalendáře &gt; Rodinné kalendáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>103</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1255</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Kalendáře &gt; Rodinné kalendáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>105</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1282</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Diáře &gt; Denní diáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>120</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1273</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Diáře &gt; Týdenní diáře</NAME>
+        <GROUP_ID>2</GROUP_ID>
+        <EXT_ID>126</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1273</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Diáře &gt; Týdenní diáře</NAME>
+        <GROUP_ID>2</GROUP_ID>
+        <EXT_ID>122</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1273</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Diáře &gt; Týdenní diáře</NAME>
+        <GROUP_ID>2</GROUP_ID>
+        <EXT_ID>127</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1273</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Diáře &gt; 18měsíční diáře</NAME>
+        <GROUP_ID>2</GROUP_ID>
+        <EXT_ID>126</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1270</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Diáře &gt; 18měsíční diáře</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>121</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1270</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Diáře &gt; Kapesní diáře</NAME>
+        <GROUP_ID>2</GROUP_ID>
+        <EXT_ID>124</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1276</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Diáře &gt; Kapesní diáře</NAME>
+        <GROUP_ID>2</GROUP_ID>
+        <EXT_ID>125</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1276</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Diáře &gt; Školní diáře</NAME>
+        <GROUP_ID>2</GROUP_ID>
+        <EXT_ID>128</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1279</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Ostatní</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>112</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1258</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Ostatní</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>127</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1258</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Ostatní</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>135</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1258</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Ostatní</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>134</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1258</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Notesy, kalendáře, diáře &gt; Ostatní</NAME>
+        <GROUP_ID>1</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>8</SORT_ID>
+        <SHOPTET_ID>1258</SHOPTET_ID>
+    </CATEGORY>
+
+
+
+
+    
+<!-- Knihy -->
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Knihy &gt; Knihy pro předškoláky i školáky</NAME>
+        <GROUP_ID>34</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>1</SORT_ID>
+        <SHOPTET_ID>1237</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Knihy &gt; Knihy pro studenty</NAME>
+        <GROUP_ID>34</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>10</SORT_ID>
+        <SHOPTET_ID>1486</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Knihy &gt; Omalovánky</NAME>
+        <GROUP_ID>34</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>2</SORT_ID>
+        <SHOPTET_ID>1240</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Knihy &gt; Knihy pro nejmenší</NAME>
+        <GROUP_ID>34</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>3</SORT_ID>
+        <SHOPTET_ID>1249</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Knihy &gt; Knihy pro maminky</NAME>
+        <GROUP_ID>34</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>9</SORT_ID>
+        <SHOPTET_ID>1432</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Knihy &gt; Knihy samolepek</NAME>
+        <GROUP_ID>34</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>4</SORT_ID>
+        <SHOPTET_ID>1243</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Knihy &gt; Knihy s odklápějícími okénky</NAME>
+        <GROUP_ID>34</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>5</SORT_ID>
+        <SHOPTET_ID>1246</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Knihy &gt; Knihy na cesty</NAME>
+        <GROUP_ID>34</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>6</SORT_ID>
+        <SHOPTET_ID>1252</SHOPTET_ID>
+    </CATEGORY>
+    <CATEGORY>
+        <COMPANY>Baagl</COMPANY>
+        <NAME>Knihy &gt; Leporela</NAME>
+        <GROUP_ID>34</GROUP_ID>
+        <EXT_ID>144</EXT_ID>
+        <SORT_ID>7</SORT_ID>
+        <SHOPTET_ID>1285</SHOPTET_ID>
+    </CATEGORY>
+</CATEGORIES>
