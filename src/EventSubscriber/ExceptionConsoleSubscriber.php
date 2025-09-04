@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\Response;
 
-final class DevExceptionConsoleSubscriber implements EventSubscriberInterface
+final class ExceptionConsoleSubscriber implements EventSubscriberInterface
 {
     private const REQ_ATTR = '_last_throwable_for_console';
 
