@@ -36,17 +36,17 @@ final class ImportController extends AbstractController
 
         // 1) Rozdělení        
         $m = $matcher->match($xmlShoptet, $items['item'] ?? $items);
-
-        // 2) Update existujících
-        foreach ($m['matched'] as $code => $pair) {
-            $writer->updateShopitem($pair['shopitem'], $pair['item'], $company);
+        // 2) Vytvoření chybějících
+        foreach ($m['missing'] as $item) {            
+            $writer->add((array) $item, 'BAAGL');
         }
 
-        // 3) Vytvoření chybějících
-        $promo = fn(string $company, string $nazev, string $catName) => get_promo($company, $nazev, $catName);
-        foreach ($m['missing'] as $row) {
-            $writer->buildShopitem($xmlShoptet, $row, $company, $promo);
-        }
+        // // 3) Update existujících
+        // foreach ($m['matched'] as $code => $pair) {
+        //     $writer->update((array) $pair['shopitem'], (array) $pair['item'], 'BAAGL');
+        // }
+
+
 
         // $importer->rebuild();
         // $inserted = $importer->insertFromItems((array)$items ?? []);

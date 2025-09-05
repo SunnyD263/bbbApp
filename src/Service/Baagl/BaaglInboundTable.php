@@ -30,7 +30,7 @@ final class BaaglInboundTable
     {
         if ($items === []) return 0;
 
-        return $this->em->transactional(function () use ($items) {
+        return $this->em->wrapTransactional(function () use ($items) {
             $count = 0;
             $batch = 300;
 

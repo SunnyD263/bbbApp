@@ -76,7 +76,7 @@ class BaaglInboundParser
             }
 
             $items[] = [
-                'code' => $code,
+                'registracni_cislo' => $code,
                 'name' => $name,
                 'uom' => $qtyUom,
                 'qty' => $qtyValue,
