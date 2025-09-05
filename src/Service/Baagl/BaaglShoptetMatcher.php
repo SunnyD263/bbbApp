@@ -1,4 +1,5 @@
 <?php
+// src\Service\Baagl\BaaglShoptetMatcher.php
 namespace App\Service\Baagl;
 
 use SimpleXMLElement;
@@ -35,7 +36,7 @@ final class BaaglShoptetMatcher
                 continue;
             }
             $matched[$code] = ['item' => $row, 'shopitem' => $byCode[$code]];
-            unset($byCode[$code]); // co zbyde v $byCode je "extra"
+            unset($byCode[$code]);
         }
 
         return [

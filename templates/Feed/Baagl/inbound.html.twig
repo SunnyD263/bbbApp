@@ -7,21 +7,28 @@
 
 
   <h3>Načíst položky z HTML souboru</h3>
-  {# form_start nastaví enctype sám, když je ve formu FileType #}
   {{ form_start(form) }}
     {{ form_row(form.html_file) }}
     <br>
-    <button class="btn">Načíst</button>
+    <button class="btn" name="action" value="load">Načíst</button>
   {{ form_end(form) }}
 
     <br>
 
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="flash-{{ label }}">{{ message }}</div>
+    {% endfor %}
+  {% endfor %}
+
   {% if result is defined and result %}
     <div class="mt-6">
 
-      {{ form_start(form) }}
-        <button class="btn">Generovat</button>
-      {{ form_end(form) }}
+      {# FORM 2: Generovat #}
+      <form method="post" action="{{ path('inbound_baagl') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('inbound_generate') }}">
+        <button class="btn" name="action" value="generate">Generovat</button>
+      </form>
       
       <br>
       <h3>Počet kusů objednávky - {{ result.sumQty }} položek</h3>
@@ -42,7 +49,7 @@
           <tbody>
           {% for item in result.items %}
             <tr>
-              <td>{{ item.code }}</td>
+              <td>{{ item.registracni_cislo }}</td>
               <td>{{ item.name }}</td>
               <td>{{ item.uom }}</td>
               <td>{{ item.qty }}</td>
