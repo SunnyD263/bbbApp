@@ -14,10 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-#[Route('/feed/baagl/import', name: 'import_baagl', methods: ['GET','POST'])]
+
 final class ImportController extends AbstractController
 {
-
+    #[Route('/feed/baagl/import', name: 'import_baagl', methods: ['GET','POST'])]
     public function __invoke(
         BaaglImportXml $importer,
         Request $request, 
@@ -31,14 +31,14 @@ final class ImportController extends AbstractController
 
         $result = null;
         $xml = $feeds->fetch(FeedKind::Instock);
-        $items = $normalizer->normalize($xml->items);
+        $items = $normalizer->normalize($xml->items,'import');
         $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
 
         // 1) Rozdělení        
-        $m = $matcher->match($xmlShoptet, $items['item'] ?? $items);
+        $m = $matcher->match($xmlShoptet,$items->item);
         // 2) Vytvoření chybějících
         foreach ($m['missing'] as $item) {            
-            $writer->add((array) $item, 'BAAGL');
+            $writer->add((array)$item, 'BAAGL');
         }
 
         // // 3) Update existujících
