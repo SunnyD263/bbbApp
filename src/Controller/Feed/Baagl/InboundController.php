@@ -90,7 +90,7 @@ final class InboundController extends AbstractController
             }
 
             $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
-            $m = $matcher->match($xmlShoptet, $data["items"] ?? $items);
+            $m = $matcher->match($xmlShoptet, $data["items"]);
 
             // 2) Vytvoření chybějících
             foreach ($m['missing'] as $item) {            
@@ -108,7 +108,6 @@ final class InboundController extends AbstractController
             );
 
             return $this->redirectToRoute('inbound_baagl');
-
         }
 
         return $this->render('feed/baagl/inbound.html.twig', [

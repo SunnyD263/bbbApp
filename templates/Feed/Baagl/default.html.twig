@@ -9,14 +9,3 @@
   {% endfor %}
 
 {% endblock %}
-
-{% block javascripts %}
-  {{ parent() }}
-  <script>
-    (function () {
-      const rows   = {{ rowsJson|default('[]')|raw }};
-      const result = {{ resultJson|default('null')|raw }};
-      console.log('result (debug group):', result);
-    })();
-  </script>
-{% endblock %}

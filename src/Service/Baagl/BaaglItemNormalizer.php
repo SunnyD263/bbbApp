@@ -3,8 +3,8 @@
 
 namespace App\Service\Baagl;
 
+use Psr\Log\LoggerInterface;
 use SimpleXMLElement;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class BaaglItemNormalizer
 {
@@ -14,33 +14,38 @@ final class BaaglItemNormalizer
         private readonly LegacyCategoryResolver $categoryResolver,
         private readonly string $ignoreRegnumPath,
         private readonly int $imageSlots = 21,
-        // ideálně sem přidej LoggerInterface $logger a používej ho
+        private readonly ?LoggerInterface $logger = null,
     ) {}
 
-    public function normalize(SimpleXMLElement $xml): SimpleXMLElement
+    public function normalize(SimpleXMLElement $xml, string $callFrom): SimpleXMLElement
     {
         $suffixes = ['-SK', '-EN', '-DE'];
-        $blacklistSkupin = ['024','043','130','132','133','145','146','147','153','154','169'];
+        $blacklistSkupin = ['024','041','043','046','130','132','133','145','146','147','153','154','169'];
 
         $ignoredRegNums = is_file($this->ignoreRegnumPath)
-            ? array_filter(array_map('trim', file($this->ignoreRegnumPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)))
+            ? array_filter(array_map(
+                fn($l) => mb_strtoupper(trim($l), 'UTF-8'),
+                file($this->ignoreRegnumPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
+            ))
             : [];
 
         $itemsRoot = isset($xml->items) ? $xml->items : $xml;
 
-        foreach ($itemsRoot->item as $item) {
-            $regnum = (string) mb_strtoupper((string)($item->registracni_cislo ?? ''), 'UTF-8');
+        $items = $itemsRoot->xpath('item') ?? [];
+
+        foreach ($items as $item) {
+            $regnum = mb_strtoupper((string)($item->registracni_cislo ?? ''), 'UTF-8');
             $extId  = (string) ($item->skupzbo ?? '');
             $title  = (string) ($item->nazev ?? '');
 
             $remove = false;
 
-            // 1) blacklist
+            // 1) blacklist skupin
             if (in_array($extId, $blacklistSkupin, true)) {
                 $remove = true;
             }
 
-            // 2) ignorované regnum
+            // 2) ignorované regnum (po sjednocení na UPPER)
             if (!$remove && in_array($regnum, $ignoredRegNums, true)) {
                 $remove = true;
             }
@@ -58,55 +63,75 @@ final class BaaglItemNormalizer
             if (!$remove) {
                 $cat = $this->categoryResolver->resolve('Baagl', $extId, $title);
                 if ($cat === null) {
-                    // service: logovat, ne addFlash
-                    // $this->logger->warning(sprintf('Kategorie pro zboží %s - ExtId: %s - Code: %s nenalezena.', $title, $extId, $regnum));
+                    if ($callFrom == 'import'){
+                        $this->logger?->info(sprintf(
+                            'Kategorie nenalezena: "%s" (ExtId: %s, Regnum: %s). Položka bude zahozená.',
+                            $title, $extId, $regnum
+                        ));
+                    }
                     $remove = true;
                 } else {
                     $catId   = (string) ($cat['shoptet_id'] ?? '');
                     $catName = (string) ($cat['cat_name'] ?? '');
 
-                    if (isset($item->category_id)) { $item->category_id = $catId; }
-                    else { $item->addChild('category_id', $catId); }
-
-                    if (isset($item->category_name)) { $item->category_name = $catName; }
-                    else { $item->addChild('category_name', $catName); }
+                    $this->setOrAddChild($item, 'category_id', $catId);
+                    $this->setOrAddChild($item, 'category_name', $catName);
 
                     // přepočet ceny
-                    $item->cena = round((float)($item->nakupni_cena ?? 0) * self::PRICE_KOEFICIENT, 0);
+                    $cena = round((float)($item->nakupni_cena ?? 0) * self::PRICE_KOEFICIENT, 0);
+                    $this->setOrAddChild($item, 'cena', (string)$cena);
                 }
             }
 
             if ($remove) {
-                // Bezpečné smazání přes DOM:
-                $node = dom_import_simplexml($item);
-                if ($node !== false && $node->parentNode) {
-                    $node->parentNode->removeChild($node);
-                }
-                // pokračuj na další item
-                continue;
+                $this->removeNode($item);
+                continue; // na další snapshotový item
             }
 
             // 4) primární skupina (fallback 999)
-            $skupina = null; // <<< inicializace!
+            $hasPrimary = false;
             if (isset($item->skupiny_zbozi)) {
                 foreach ($item->skupiny_zbozi as $skupiny_zbozi) {
                     if (isset($skupiny_zbozi->skupina[0])) {
-                        foreach ($skupiny_zbozi->skupina as $skupinaCheck) {
-                            if ((string)$skupinaCheck->primary === 'true') {
-                                $skupina = $skupinaCheck;
+                        foreach ($skupiny_zbozi->skupina as $sk) {
+                            // Podpora atributu i elementu, true i "1"
+                            $primaryAttr = (string)$sk['primary'];
+                            $primaryElem = (string)$sk->primary;
+                            if ($primaryAttr === 'true' || $primaryAttr === '1' || $primaryElem === 'true' || $primaryElem === '1') {
+                                $hasPrimary = true;
                                 break 2;
                             }
                         }
                     }
                 }
             }
-            if ($skupina === null) {
-                $missId = new SimpleXMLElement('<skupina primary="true"><id>999</id></skupina>');
-                $skupina = $missId;
-            }
 
+            if (!$hasPrimary) {
+                // zajistíme existenci <skupiny_zbozi> a vložíme fallback
+                $sz = isset($item->skupiny_zbozi[0]) ? $item->skupiny_zbozi[0] : $item->addChild('skupiny_zbozi');
+                $sk = $sz->addChild('skupina');
+                $sk->addAttribute('primary', 'true');
+                $sk->addChild('id', '999');
+            }
         }
 
-        return $xml->item;
+        return $xml;
+    }
+
+    private function removeNode(SimpleXMLElement $node): void
+    {
+        $dom = dom_import_simplexml($node);
+        if ($dom !== false && $dom->parentNode) {
+            $dom->parentNode->removeChild($dom);
+        }
+    }
+
+    private function setOrAddChild(SimpleXMLElement $parent, string $name, string $value): void
+    {
+        if (isset($parent->$name)) {
+            $parent->$name = $value;
+        } else {
+            $parent->addChild($name, $value);
+        }
     }
 }
