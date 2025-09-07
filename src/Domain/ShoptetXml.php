@@ -2,99 +2,131 @@
 // src/Domain/ShoptetXml.php
 namespace App\Domain;
 
-final class ShoptetData
+use DOMDocument;
+use DOMElement;
+use function App\Domain\ShoptetXmlFunc\addText; // (jen pro případ importu funkcí – nepoužíváme zde)
+
+final class ShoptetXml
 {
-    public function __construct(
-        public ?string $name = null,
-        public ?string $shortDescription = null,
-        public ?string $description = null,
-        public ?string $manufacturer = null,
-        public ?string $supplier = null,
-        public ?string $warranty = null,
-        public ?int $adult = null,
-        public ?string $itemType = null,
-        public array $categories = [],    
-        public array $images = [],   
-        public array $informationParameter = [],
-        public array $flag = [],   
-        public ?string $visibility = null,   
-        public ?string $seoTitle = null,    
-        public ?int $allowsIplatba = null,      
-        public ?int $allowsPayOnline = null, 
-        public ?int $freeShipping = null,      
-        public ?int $freeBilling = null,         
-        public ?string $unit = null,                 
-        public ?string $code = null,     
-        public ?string $ean = null,
-        public array $logistic = [],
-        public ?int $atypicalShipping = null,
-        public ?int $atypicalBilling = null,
-        public ?string $currency = null,
-        public ?int $vat = null,
-        public ?float $priceVat = null,
-        public ?float $purchasePrice = null,
-        public ?float $standardPrice = null,
-        public ?int $minimalAmount = null,
-        public ?int $maximalAmount = null,
-        public ?string $availabilityOutOfStock = null,
-        public ?string $availabilityInStock = null,
-        public ?int $visible = null,
-        public ?string $productNumber = null,
-        public ?int $firmyCz = null,
-        public ?int $heurekaHidden = null,
-        public ?int $heurekaCartHidden = null,
-        public ?int $zboziHidden = null,
-        public ?int $arukeresoHidden = null,
-        public ?int $arukeresoMarketplaceHidden = null,
-        public ?int $decimalCount = null,
-        public ?int $negativeAmount = null,
-        public ?int $priceRatio = null,
-        public ?int $minPriceRatio = null,
-        public ?float $actionPrice = null,
-        public ?\DateTimeInterface $actionFrom = null,
-        public ?\DateTimeInterface $actionUntil = null,
-        public ?int $applyLoyaltyDiscount = null,
-        public ?int $applyVolumeDiscount = null,
-        public ?int $applyQuantityDiscount = null,
-        public ?int $applyDiscountCoupon = null,
-        public ?array $stock = [],  
-        public ?string $weight = null,
-        public ?string $height = null,
-        public ?string $width = null,
-        public ?string $depth = null,    
-    
-    ) 
+    /** @param ShoptetData[] $items */
+    public function build($items): string
     {
-        $this->warranty ??= '2 roky';
-        $this->adult ??= 0;
-        $this->itemType ??= 'product';
-        $this->visibility ??= 'visible';
-        $this->allowsIplatba  ??= 1;  
-        $this->allowsPayOnline  ??= 1;
-        $this->freeShipping  ??= 0;  
-        $this->freeBilling  ??= 0;                  
-        $this->atypicalShipping ??= 0;
-        $this->atypicalBilling ??= 0;
-        $this->currency ??= 'CZK';
-        $this->availabilityOutOfStock ??= 'Momentálně nedostupné';
-        $this->availabilityInStock ??= 'Skladem ve skladu e-shopu';
-        $this->visible  ??= 1;  
-        $this->firmyCz  ??= 1;  
-        $this->heurekaHidden  ??= 0;  
-        $this->heurekaCartHidden  ??= 0; 
-        $this->zboziHidden  ??= 0;  
-        $this->arukeresoHidden  ??= 0;
-        $this->arukeresoMarketplaceHidden  ??= 0;  
-        $this->decimalCount  ??= 0;
-        $this->negativeAmount  ??= 0;  
-        $this->priceRatio  ??= 1;  
-        $this->minPriceRatio  ??= 0;  
-        $this->actionPrice  ??= 0;  
-        $this->actionFrom ??= new \DateTimeImmutable('1999-01-01');  
-        $this->actionUntil  ??= new \DateTimeImmutable('1999-01-01');  
-        $this->applyLoyaltyDiscount  ??= 1; 
-        $this->applyVolumeDiscount  ??= 0;  
-        $this->applyQuantityDiscount  ??= 1;  
-        $this->applyDiscountCoupon  ??= 0;  
+        $doc = new DOMDocument('1.0', 'UTF-8');
+        $doc->formatOutput = true;
+
+        $shop = $doc->createElement('SHOP');
+        $doc->appendChild($shop);
+
+        foreach ($items as $d) {
+            $this->appendShopItem($doc, $shop, $d);
+        }
+
+        return $doc->saveXML();
+    }
+
+    private function appendShopItem(DOMDocument $doc, DOMElement $shop, ShoptetData $d): void
+    {
+        $it = $doc->createElement('SHOPITEM');
+        if ($d->id !== null) {
+            $it->setAttribute('id', (string)$d->id);
+        }
+        $shop->appendChild($it);
+
+        // Základ
+        ShoptetXmlFunc::addText($doc, $it, 'NAME', $d->name);
+        if ($d->guid) {
+            ShoptetXmlFunc::addText($doc, $it, 'GUID', $d->guid);
+        }
+        ShoptetXmlFunc::addCdata($doc, $it, 'SHORT_DESCRIPTION', $d->shortDescription);
+        ShoptetXmlFunc::addCdata($doc, $it, 'DESCRIPTION', $d->description);
+        ShoptetXmlFunc::addText($doc, $it, 'MANUFACTURER', $d->manufacturer);
+        ShoptetXmlFunc::addText($doc, $it, 'WARRANTY', $d->warranty);
+        ShoptetXmlFunc::addText($doc, $it, 'SUPPLIER', $d->supplier);
+        ShoptetXmlFunc::addText($doc, $it, 'ADULT', (string)$d->adult);
+        ShoptetXmlFunc::addText($doc, $it, 'ITEM_TYPE', $d->itemType);
+
+        // Bloky
+        ShoptetXmlFunc::appendCategories($doc, $it, $d->categories);
+        ShoptetXmlFunc::appendImages($doc, $it, $d->images);
+        ShoptetXmlFunc::appendInfoParams($doc, $it, $d->infoParameters);
+        ShoptetXmlFunc::appendFlags($doc, $it, $d->flags);
+
+        // Viditelnost/SEO/Platební
+        ShoptetXmlFunc::addText($doc, $it, 'VISIBILITY', $d->visibility);
+        ShoptetXmlFunc::addText($doc, $it, 'SEO_TITLE', $d->seoTitle);
+        ShoptetXmlFunc::addText($doc, $it, 'ALLOWS_IPLATBA', (string)$d->allowsIPlatba);
+        ShoptetXmlFunc::addText($doc, $it, 'ALLOWS_PAY_ONLINE', (string)$d->allowsPayOnline);
+        ShoptetXmlFunc::addText($doc, $it, 'INTERNAL_NOTE', $d->internalNote);
+        ShoptetXmlFunc::addText($doc, $it, 'HEUREKA_CATEGORY_ID', $d->heurekaCategoryId);
+        ShoptetXmlFunc::addText($doc, $it, 'ZBOZI_CATEGORY_ID', $d->zboziCategoryId);
+        ShoptetXmlFunc::addText($doc, $it, 'GOOGLE_CATEGORY_ID', $d->googleCategoryId);
+        ShoptetXmlFunc::addText($doc, $it, 'GLAMI_CATEGORY_ID', $d->glamiCategoryId);
+        ShoptetXmlFunc::addText($doc, $it, 'FREE_SHIPPING', (string)$d->freeShipping);
+        ShoptetXmlFunc::addText($doc, $it, 'FREE_BILLING', (string)$d->freeBilling);
+        ShoptetXmlFunc::addText($doc, $it, 'UNIT', $d->unit);
+
+        // Kódy
+        ShoptetXmlFunc::addText($doc, $it, 'CODE', $d->code);
+        ShoptetXmlFunc::addText($doc, $it, 'EAN', $d->ean);
+        ShoptetXmlFunc::addText($doc, $it, 'PRODUCT_NUMBER', $d->productNumber ?? $d->code);
+
+        // Logistika
+        ShoptetXmlFunc::appendLogistic($doc, $it, $d);
+
+        // Atyp
+        $atyp = $doc->createElement('ATYPICAL_PRODUCT');
+        ShoptetXmlFunc::addText($doc, $atyp, 'ATYPICAL_SHIPPING', (string)$d->atypicalShipping);
+        ShoptetXmlFunc::addText($doc, $atyp, 'ATYPICAL_BILLING', (string)$d->atypicalBilling);
+        $it->appendChild($atyp);
+
+        // Ceny/DPH
+        ShoptetXmlFunc::addText($doc, $it, 'CURRENCY', $d->currency);
+        ShoptetXmlFunc::addText($doc, $it, 'VAT', (string)$d->vat);
+        ShoptetXmlFunc::addText($doc, $it, 'PRICE_VAT', ShoptetXmlFunc::f($d->priceVat));
+        ShoptetXmlFunc::addText($doc, $it, 'PURCHASE_PRICE', ShoptetXmlFunc::f($d->purchasePrice));
+        ShoptetXmlFunc::addText($doc, $it, 'STANDARD_PRICE', ShoptetXmlFunc::f($d->standardPrice));
+
+        // Sklady
+        ShoptetXmlFunc::appendStock($doc, $it, $d);
+
+        // Dostupnosti/viditelnosti
+        ShoptetXmlFunc::addText($doc, $it, 'AVAILABILITY_OUT_OF_STOCK', $d->availabilityOut);
+        ShoptetXmlFunc::addText($doc, $it, 'AVAILABILITY_IN_STOCK', $d->availabilityIn);
+        ShoptetXmlFunc::addText($doc, $it, 'VISIBLE', (string)$d->visible);
+
+        // Market + přepínače
+        ShoptetXmlFunc::addText($doc, $it, 'FIRMY_CZ', (string)$d->firmyCz);
+        ShoptetXmlFunc::addText($doc, $it, 'HEUREKA_HIDDEN', (string)$d->heurekaHidden);
+        ShoptetXmlFunc::addText($doc, $it, 'HEUREKA_CART_HIDDEN', (string)$d->heurekaCartHidden);
+        ShoptetXmlFunc::addText($doc, $it, 'HEUREKA_CPC', $d->heurekaCpc);
+        ShoptetXmlFunc::addText($doc, $it, 'ZBOZI_HIDDEN', (string)$d->zboziHidden);
+        ShoptetXmlFunc::addText($doc, $it, 'ZBOZI_CPC', $d->zboziCpc);
+        ShoptetXmlFunc::addText($doc, $it, 'ZBOZI_SEARCH_CPC', $d->zboziSearchCpc);
+        ShoptetXmlFunc::addText($doc, $it, 'ARUKERESO_HIDDEN', (string)$d->arukeresoHidden);
+        ShoptetXmlFunc::addText($doc, $it, 'ARUKERESO_MARKETPLACE_HIDDEN', (string)$d->arukeresoMarketplaceHidden);
+        ShoptetXmlFunc::addText($doc, $it, 'DECIMAL_COUNT', (string)$d->decimalCount);
+        ShoptetXmlFunc::addText($doc, $it, 'NEGATIVE_AMOUNT', (string)$d->negativeAmount);
+
+        // Jednotky měr a poměry
+        $uom = $doc->createElement('UNIT_OF_MEASURE');
+        ShoptetXmlFunc::addText($doc, $uom, 'PACKAGE_AMOUNT', $d->packageAmount);
+        ShoptetXmlFunc::addText($doc, $uom, 'PACKAGE_AMOUNT_UNIT', $d->packageAmountUnit);
+        ShoptetXmlFunc::addText($doc, $uom, 'MEASURE_AMOUNT', $d->measureAmount);
+        ShoptetXmlFunc::addText($doc, $uom, 'MEASURE_AMOUNT_UNIT', $d->measureAmountUnit);
+        $it->appendChild($uom);
+
+        ShoptetXmlFunc::addText($doc, $it, 'PRICE_RATIO', ShoptetXmlFunc::f($d->priceRatio));
+        ShoptetXmlFunc::addText($doc, $it, 'MIN_PRICE_RATIO', ShoptetXmlFunc::f($d->minPriceRatio));
+
+        // Akce
+        ShoptetXmlFunc::addText($doc, $it, 'ACTION_PRICE', ShoptetXmlFunc::f($d->actionPrice));
+        ShoptetXmlFunc::addText($doc, $it, 'ACTION_PRICE_FROM', ShoptetXmlFunc::date($d->actionFrom) ?? '1999-01-01');
+        ShoptetXmlFunc::addText($doc, $it, 'ACTION_PRICE_UNTIL', ShoptetXmlFunc::date($d->actionUntil) ?? '1999-01-01');
+
+        // Přepínače slev
+        ShoptetXmlFunc::addText($doc, $it, 'APPLY_LOYALTY_DISCOUNT', (string)$d->applyLoyaltyDiscount);
+        ShoptetXmlFunc::addText($doc, $it, 'APPLY_VOLUME_DISCOUNT', (string)$d->applyVolumeDiscount);
+        ShoptetXmlFunc::addText($doc, $it, 'APPLY_QUANTITY_DISCOUNT', (string)$d->applyQuantityDiscount);
+        ShoptetXmlFunc::addText($doc, $it, 'APPLY_DISCOUNT_COUPON', (string)$d->applyDiscountCoupon);
     }
 }

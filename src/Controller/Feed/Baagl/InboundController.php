@@ -4,6 +4,7 @@ namespace App\Controller\Feed\Baagl;
 
 use App\Service\FeedProvider;
 use App\Domain\FeedKind;
+use App\Domain\ShoptetXml;
 use App\Entity\Baagl\BaaglInbound;
 use App\Form\Baagl\InboundUploadType;
 use App\Service\Baagl\BaaglInboundTable;
@@ -20,6 +21,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 final class InboundController extends AbstractController
 {
+    public function __construct(private string $XmlFeedPath) {}
+
     #[Route('/feed/baagl/inbound', name: 'inbound_baagl', methods: ['GET','POST'])]
     public function inboundBaagl(
         Request $request,
@@ -83,24 +86,30 @@ final class InboundController extends AbstractController
                 return $this->redirectToRoute('inbound_baagl');
             }
 
-            $data = $session->get('inbound_result');
-            if (!$data || empty($data['items'])) {
+            $sessionData = $session->get('inbound_result');
+            if (!$sessionData || empty($sessionData['items'])) {
                 $this->addFlash('warning', 'Není co generovat. Nejprve načti data.');
                 return $this->redirectToRoute('inbound_baagl');
             }
 
             $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
-            $m = $matcher->match($xmlShoptet, $data["items"]);
+            $m = $matcher->match($xmlShoptet, $sessionData["items"]);
 
             // 2) Vytvoření chybějících
             foreach ($m['missing'] as $item) {            
-                $writer->add((array) $item, 'Výchozí sklad');
+                $this->logger?->info(sprintf(
+                    'Kategorie nenalezena: "%s" (Regnum: %s). Nebude naskladněna.',
+                    $m["shopitem"]->NAME, $m["shopitem"]->CODE
+                ));
             }
 
             // 3) Update existujících
             foreach ($m['matched'] as $code => $pair) {
-                $writer->inbound((array) $pair['shopitem'], (array) $pair['item'], 'Výchozí sklad');
+            $data[] = $writer->inbound((array) $pair['shopitem'], (array) $pair['item'], 'Výchozí sklad');
             }
+
+            $xml = (new ShoptetXml())->build($data);
+            file_put_contents($this->XmlFeedPath, $xml);
 
             $this->addFlash('success',
                 'Načtení položek objednávky. Vloženo %d položek.',
