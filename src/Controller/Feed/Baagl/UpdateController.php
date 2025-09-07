@@ -6,6 +6,7 @@ use App\Service\Baagl\BaaglImportXml;
 use App\Service\Baagl\BaaglItemNormalizer;
 use App\Service\Baagl\BaaglShoptetMatcher;
 use App\Service\Baagl\BaaglShoptetWriter;
+use App\Domain\ShoptetXml;
 use App\Domain\FeedKind;
 use App\Form\DefaultType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 final class UpdateController extends AbstractController
 {
+    public function __construct(private string $XmlFeedPath) {}
+    
     #[Route('/feed/baagl/update', name: 'update_baagl', methods: ['GET'])]
     public function __invoke(
         BaaglImportXml $importer,
@@ -43,10 +46,11 @@ final class UpdateController extends AbstractController
 
         // 3) Update existujících
         foreach ($m['matched'] as $code => $pair) {
-            $writer->update((array) $pair['shopitem'], (array) $pair['item'], 'BAAGL');
+        $data[] = $writer->update((array) $pair['shopitem'], (array) $pair['item'], 'BAAGL');
         }
 
-
+        $xml = (new ShoptetXml())->build($data);
+        file_put_contents($this->XmlFeedPath, $xml);
 
         // $importer->rebuild();
         // $inserted = $importer->insertFromItems((array)$items ?? []);

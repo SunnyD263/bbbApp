@@ -1,10 +1,10 @@
 <?php
-// src\Service\Baagl\BaaglShoptetWriter.php
+declare(strict_types=1);
+
 namespace App\Service\Baagl;
 
 use App\Domain\ShoptetData;
 use Psr\Log\LoggerInterface;
-use SimpleXMLElement;
 
 final class BaaglShoptetWriter
 {
@@ -12,166 +12,168 @@ final class BaaglShoptetWriter
     private const COMPANY = 'BAAGL';
 
     public function __construct(
-        private LoggerInterface $logger, 
+        private LoggerInterface $logger,
         private BaaglShoptetWriterFunc $fn,
     ) {}
 
-    //*************************** ADD ********************************/
-    public function add(array $row, string $warehouse)
+    /** Nová položka z feedu */
+    public function add(array $row, string $warehouse): ShoptetData
     {
-        $dimensions = [
-            'Výška'   => ['value' => $row['vyska'] ?? '', 'unit' => 'cm'],
-            'Šířka'   => ['value' => $row['sirka'] ?? '', 'unit' => 'cm'],
-            'Hloubka' => ['value' => $row['hloubka'] ?? '', 'unit' => 'cm'],
-            'Nosnost' => ['value' => $row['nosnost'] ?? '', 'unit' => 'kg'],
-        ];
+        // Info parametry (rozměry/nosnost)
+        $infoParameters = [];
+        $this->fn->pushDim($infoParameters, 'Výška',   (string)($row['vyska']   ?? ''), 'cm');
+        $this->fn->pushDim($infoParameters, 'Šířka',   (string)($row['sirka']   ?? ''), 'cm');
+        $this->fn->pushDim($infoParameters, 'Hloubka', (string)($row['hloubka'] ?? ''), 'cm');
+        $this->fn->pushDim($infoParameters, 'Nosnost', (string)($row['nosnost'] ?? ''), 'kg');
 
-        foreach ($dimensions as $name => $data) {
-            $value = $data['value'];
-            $unit = $data['unit'];
-            $informationParameter = [];
-            if ($value !== '0.00' && $value !== '0.0' && $value !== '') {
-                $informationParameter[] = [
-                    'NAME'  => $name,
-                    'VALUE' => $value . ' ' . $unit,
-                ];
-            }
-        }
+        // Sklady + dostupnost
+        $wh = $this->fn->getWhArray((int)($row['stav'] ?? 0), 'add');
+        $availability = $this->fn->getAvailability($wh['stockMainWh'], $wh['stockExtWh']);
 
-        $stock = $this->fn->getWhArray($row["stav"] ,'add');
-        $availability = $this->fn->getAvailability($stock["stockMainWh"],$stock["stockExtWh"]);
+        // Obrázky do jednotného tvaru
+        $images = $this->fn->mapFeedImages($row['obrazky']->obr ?? []);
 
+        $d = new ShoptetData();
+        $d->name         = (string)($row['nazev'] ?? '');
+        $d->description  = (string)($row['popis'] ?? '');
+        $d->code         = (string)($row['registracni_cislo'] ?? '');
+        $d->manufacturer = self::COMPANY;
+        $d->supplier     = self::COMPANY;
 
-        return new ShoptetData(
+        $d->categories     = (array)$this->fn->getCategory((string)($row['category_name'] ?? ''));
+        $d->images         = $images;
+        $d->unit           = (string)($row['merna_jednotka'] ?? 'ks');
 
-            name: (string) $row["nazev"],
-            description:(string) $row["popis"],
-            code: (string) $row["registracni_cislo"],
-            manufacturer: (string) self::COMPANY,
-            supplier: (string) self::COMPANY,
-            categories: (array) $this->fn->getCategory($row["category_name"]),
-            images: (array) $row["obrazky"]->obr,
-            unit: (string) $row["merna_jednotka"],
-            stock: (array) $stock["result"],  
-            vat: $this->fn->getVAT($row["dph"]),
-            currency:(string) $row["mena"],
-            priceVat: (float) $row["cena"],
-            purchasePrice: (float)$row["nakupni_cena"],            
-            standardPrice: (float)$row["cena"],
-            informationParameter: (Array) $informationParameter,
-            weight:(string) $row['hmotnost'],
-            height:(string) $row['vyska'],
-            width: (string) $row['sirka'],
-            depth: (string) $row['hloubka'],
-            availabilityInStock: $availability["availability"], 
-            visibility: $availability["visibility"],
-        );
+        $d->warehouses     = (array)$wh['result'];
+        $d->vat            = (int)$this->fn->getVAT($row['dph'] ?? null);
+        $d->currency       = (string)($row['mena'] ?? 'CZK');
+        $d->priceVat       = isset($row['cena']) ? (float)$row['cena'] : null;
+        $d->purchasePrice  = isset($row['nakupni_cena']) ? (float)$row['nakupni_cena'] : null;
+        $d->standardPrice  = isset($row['cena']) ? (float)$row['cena'] : null;
+
+        $d->infoParameters = $infoParameters;
+
+        // Logistika
+        $d->logHeight = $this->fn->toFloatOrNull($row['vyska']    ?? null);
+        $d->logWidth  = $this->fn->toFloatOrNull($row['sirka']    ?? null);
+        $d->logDepth  = $this->fn->toFloatOrNull($row['hloubka']  ?? null);
+        $d->logWeight = $this->fn->toFloatOrNull($row['hmotnost'] ?? null);
+
+        // Dostupnost/viditelnost
+        $d->availabilityIn = (string)$availability['availability'];
+        $d->visibility     = (string)$availability['visibility'];
+
+        return $d;
     }
 
-    //*************************** INBOUND ********************************/
-    public function inbound(array $shoptetRow, array $row, string $warehouse)
+    /** Příjem (navýšení skladu) k existujícímu produktu */
+    public function inbound(array $shoptetRow, array $row, string $warehouse): ShoptetData
     {
-        $stock = $this->fn->getWhArray($row["qty"],'inbound',$shoptetRow );
-        $availability = $this->fn->getAvailability($stock["stockMainWh"],$stock["stockExtWh"]);
+        $wh = $this->fn->getWhArray((int)($row['qty'] ?? 0), 'inbound', $shoptetRow);
+        $availability = $this->fn->getAvailability($wh['stockMainWh'], $wh['stockExtWh']);
 
+        $d = new ShoptetData();
+        $d->warehouses    = (array)$wh['result'];
+        $d->availabilityIn= (string)$availability['availability'];
+        $d->visibility    = (string)$availability['visibility'];
+        return $d;
+    }
 
-        return new ShoptetData(           
-            stock: (array) $stock["result"],
-            availabilityInStock: $availability["availability"], 
-            visibility: $availability["visibility"],
-        );
-    } 
-    
-    //*************************** UPDATE ********************************/
-    public function update(array $shoptetRow, array $row, string $warehouse)
+    /** Update existující položky (ceny, sklady, parametry…) */
+    public function update(array $shoptetRow, array $row, string $warehouse): ShoptetData
     {
-        $stock = (array)($this->fn->getWhArray($row["stav"],'update',$shoptetRow));
-        $availability = $this->fn->getAvailability($stock["stockMainWh"],$stock["stockExtWh"]);
+        $wh = $this->fn->getWhArray((int)($row['stav'] ?? 0), 'update', $shoptetRow);
+        $availability = $this->fn->getAvailability($wh['stockMainWh'], $wh['stockExtWh']);
+        $vat = (int)$this->fn->getVAT($row['dph'] ?? null);
 
-        $vat = $this->fn->getVAT($row["dph"]);
+        // Mapování bloků ze Shoptetu
+        $images        = $this->fn->mapShoptetImages($shoptetRow['IMAGES']->IMAGE ?? null, (string)($shoptetRow['CODE'] ?? ''), $this->logger);
+        $flags         = $this->fn->mapShoptetFlags($shoptetRow['FLAGS']->FLAG ?? null);
+        $categories    = $this->fn->mapShoptetCategories($shoptetRow['CATEGORIES'] ?? null, (string)($shoptetRow['CODE'] ?? ''), $this->logger);
+        $infoParameters= $this->fn->mapShoptetInfoParams($shoptetRow['INFORMATION_PARAMETERS']->INFORMATION_PARAMETER ?? null);
 
-        $images = (array)($shoptetRow["IMAGES"]->IMAGE ?? null)?->IMAGE;
-        if (isset($shoptetRow["IMAGES"]->IMAGE[0])){
-            if ($shoptetRow["IMAGES"]->IMAGE[0] == '') {
-                $this->logger->warning('Missing IMAGES for code=' . (string)($shoptetRow['CODE'] ?? ''));  
-            }
+        // LOGISTIC -> do jednotlivých polí
+        $log = $shoptetRow['LOGISTIC'] ?? null;
+
+        // Akční data
+        $actionFrom  = isset($shoptetRow['ACTION_PRICE_FROM'])
+            ? \DateTimeImmutable::createFromFormat('Y-m-d', (string)$shoptetRow['ACTION_PRICE_FROM']) ?: null
+            : null;
+        $actionUntil = isset($shoptetRow['ACTION_PRICE_UNTIL'])
+            ? \DateTimeImmutable::createFromFormat('Y-m-d', (string)$shoptetRow['ACTION_PRICE_UNTIL']) ?: null
+            : null;
+
+        $d = new ShoptetData();
+        $d->name         = (string)($shoptetRow['NAME'] ?? '');
+        $d->description  = (string)($shoptetRow['DESCRIPTION'] ?? '');
+        $d->manufacturer = self::COMPANY;
+        $d->supplier     = self::COMPANY;
+        $d->adult        = (int)($shoptetRow['ADULT'] ?? 0);
+        $d->itemType     = (string)($shoptetRow['ITEM_TYPE'] ?? 'product');
+
+        $d->categories     = $categories;
+        $d->images         = $images;
+        $d->infoParameters = $infoParameters;
+        $d->flags          = $flags;
+
+        $d->visibility      = (string)$availability['visibility'];
+        $d->seoTitle        = (string)($shoptetRow['SEO_TITLE'] ?? '');
+        $d->allowsIPlatba   = (int)($shoptetRow['ALLOWS_IPLATBA'] ?? 1);
+        $d->allowsPayOnline = (int)($shoptetRow['ALLOWS_PAY_ONLINE'] ?? 1);
+        $d->freeShipping    = (int)($shoptetRow['FREE_SHIPPING'] ?? 0);
+        $d->freeBilling     = (int)($shoptetRow['FREE_BILLING'] ?? 0);
+        $d->unit            = (string)($shoptetRow['UNIT'] ?? 'ks');
+
+        $d->code = (string)($shoptetRow['CODE'] ?? '');
+        $d->ean  = (string)($shoptetRow['EAN'] ?? '');
+
+        if ($log) {
+            $d->logDepth  = $this->fn->toFloatOrNull($log['DEPTH']  ?? null);
+            $d->logWidth  = $this->fn->toFloatOrNull($log['WIDTH']  ?? null);
+            $d->logHeight = $this->fn->toFloatOrNull($log['HEIGHT'] ?? null);
+            $d->logWeight = $this->fn->toFloatOrNull($log['WEIGHT'] ?? null);
         }
 
-        $flagsIter = ($shoptetRow['FLAGS'] ?? null)?->FLAG;
-        $flags = $flagsIter ? iterator_to_array($flagsIter, false) : [];
- 
-        if (isset($shoptetRow["CATEGORIES"]->CATEGORY)){
-            if ($shoptetRow["CATEGORIES"]->CATEGORY == '') {
-                $this->logger->warning('Missing CATEGORY for code=' . (string)($shoptetRow['CODE'] ?? ''));  
-                $categories = [];
-            } else {
-            $categories = $shoptetRow["CATEGORIES"];
-            }
+        $atyp = $shoptetRow['ATYPICAL_PRODUCT'] ?? null;
+        if ($atyp) {
+            $d->atypicalShipping = (int)($atyp->ATYPICAL_SHIPPING ?? 0);
+            $d->atypicalBilling  = (int)($atyp->ATYPICAL_BILLING  ?? 0);
         }
 
-        if(isset($shoptetRow["INFORMATION_PARAMETERS"]->INFORMATION_PARAMETER)){
-            $informationParameter =  $shoptetRow["INFORMATION_PARAMETERS"]->INFORMATION_PARAMETER;   
-        } else {
-            $informationParameter = [];
-        }
+        $d->currency      = (string)($shoptetRow['CURRENCY'] ?? 'CZK');
+        $d->vat           = $vat;
+        $d->priceVat      = isset($row['cena']) ? (float)$row['cena'] : null;
+        $d->purchasePrice = isset($row['nakupni_cena']) ? (float)$row['nakupni_cena'] : null;
+        $d->standardPrice = isset($row['cena']) ? (float)$row['cena'] : null;
 
-        $actionFrom  = ($shoptetRow['ACTION_PRICE_FROM']  ?? null)
-            ? \DateTimeImmutable::createFromFormat('Y-m-d', $shoptetRow['ACTION_PRICE_FROM']) : null;
-        $actionUntil = ($shoptetRow['ACTION_PRICE_UNTIL'] ?? null)
-            ? \DateTimeImmutable::createFromFormat('Y-m-d', $shoptetRow['ACTION_PRICE_UNTIL']) : null;
+        $d->warehouses    = (array)$wh['result'];
+        $d->minimalAmount = isset($shoptetRow['STOCK']->MINIMAL_AMOUNT) ? (int)$shoptetRow['STOCK']->MINIMAL_AMOUNT : null;
+        $d->maximalAmount = isset($shoptetRow['STOCK']->MAXIMAL_AMOUNT) ? (int)$shoptetRow['STOCK']->MAXIMAL_AMOUNT : null;
 
-        return new ShoptetData(
+        $d->availabilityOut = (string)($shoptetRow['AVAILABILITY_OUT_OF_STOCK'] ?? 'Momentálně nedostupné');
+        $d->availabilityIn  = (string)$availability['availability'];
+        $d->visible         = isset($shoptetRow['VISIBLE']) ? (int)$shoptetRow['VISIBLE'] : 1;
 
-            name: (string) $shoptetRow["NAME"],
-            description:(string) ($shoptetRow["DESCRIPTION"] ?? ''),
-            manufacturer: (string) self::COMPANY,
-            supplier: (string) self::COMPANY,
-            adult: (int) $shoptetRow["ADULT"],
-            itemType: (string) $shoptetRow["ITEM_TYPE"],
-            categories: (array)$categories,
-            images: (array)$images,
-            informationParameter: (array) $informationParameter,
-            flag: (array) $flags, 
-            visibility: $availability["visibility"],
-            seoTitle: (string) $shoptetRow["SEO_TITLE"],
-            allowsIplatba: (int) $shoptetRow["ALLOWS_IPLATBA"],
-            allowsPayOnline: (int) $shoptetRow["ALLOWS_PAY_ONLINE"],
-            freeShipping: (int) $shoptetRow["FREE_SHIPPING"],
-            freeBilling: (int) $shoptetRow["FREE_BILLING"],
-            unit: (string) $shoptetRow["UNIT"], 
-            code: (string) $shoptetRow["CODE"],
-            ean: (string) $shoptetRow["EAN"],
-            logistic: (array) $shoptetRow["LOGISTIC"],
-            atypicalShipping: (int) $shoptetRow["ATYPICAL_PRODUCT"]->ATYPICAL_SHIPPING,
-            atypicalBilling: (int) $shoptetRow["ATYPICAL_PRODUCT"]->ATYPICAL_BILLING,
-            currency: (string) $shoptetRow["CURRENCY"],     
-            vat: (int) $vat,
-            priceVat: (float) $row["cena"],
-            purchasePrice: (float)$row["nakupni_cena"],            
-            standardPrice: (float)$row["cena"],
-            minimalAmount: (int)$shoptetRow["STOCK"]->MINIMAL_AMOUNT,
-            maximalAmount: (int)$shoptetRow["STOCK"]->MAXIMAL_AMOUNT,
-            stock: (array) $stock["result"],
-            availabilityOutOfStock: (string)$shoptetRow["AVAILABILITY_OUT_OF_STOCK"],
-            availabilityInStock: $availability["availability"], 
-            visible: (int)$shoptetRow["VISIBLE"],
-            productNumber: $shoptetRow["PRODUCT_NUMBER"],
-            firmyCz: (int)$shoptetRow["FIRMY_CZ"],
-            heurekaHidden: (int)$shoptetRow["HEUREKA_HIDDEN"],
-            heurekaCartHidden: (int)$shoptetRow["HEUREKA_CART_HIDDEN"],
-            zboziHidden: (int)$shoptetRow["ZBOZI_HIDDEN"],
-            arukeresoHidden:(int)$shoptetRow["ARUKERESO_HIDDEN"],
-            arukeresoMarketplaceHidden: (int)$shoptetRow["ARUKERESO_MARKETPLACE_HIDDEN"],
-            decimalCount: (int)$shoptetRow["DECIMAL_COUNT"],
-            negativeAmount: (int)$shoptetRow["NEGATIVE_AMOUNT"],
-            priceRatio: (int)$shoptetRow["PRICE_RATIO"],
-            minPriceRatio: (int)$shoptetRow["MIN_PRICE_RATIO"],
-            actionPrice: (float)$shoptetRow["ACTION_PRICE"],
-            actionFrom: $actionFrom,
-            actionUntil: $actionUntil,
-            applyVolumeDiscount: (int)$shoptetRow["APPLY_VOLUME_DISCOUNT"],
-            applyQuantityDiscount: (int)$shoptetRow['APPLY_QUANTITY_DISCOUNT'],
-            applyDiscountCoupon: (int)$shoptetRow['APPLY_DISCOUNT_COUPON'],
-        );
+        $d->productNumber   = (string)($shoptetRow['PRODUCT_NUMBER'] ?? $d->code);
+        $d->firmyCz         = (int)($shoptetRow['FIRMY_CZ'] ?? 1);
+        $d->heurekaHidden   = (int)($shoptetRow['HEUREKA_HIDDEN'] ?? 0);
+        $d->heurekaCartHidden = (int)($shoptetRow['HEUREKA_CART_HIDDEN'] ?? 0);
+        $d->zboziHidden     = (int)($shoptetRow['ZBOZI_HIDDEN'] ?? 0);
+        $d->arukeresoHidden = (int)($shoptetRow['ARUKERESO_HIDDEN'] ?? 0);
+        $d->arukeresoMarketplaceHidden = (int)($shoptetRow['ARUKERESO_MARKETPLACE_HIDDEN'] ?? 0);
+        $d->decimalCount    = (int)($shoptetRow['DECIMAL_COUNT'] ?? 0);
+        $d->negativeAmount  = (int)($shoptetRow['NEGATIVE_AMOUNT'] ?? 0);
+        $d->priceRatio      = (float)($shoptetRow['PRICE_RATIO'] ?? 1);
+        $d->minPriceRatio   = (float)($shoptetRow['MIN_PRICE_RATIO'] ?? 0);
+
+        $d->actionPrice     = isset($shoptetRow['ACTION_PRICE']) ? (float)$shoptetRow['ACTION_PRICE'] : null;
+        $d->actionFrom      = $actionFrom;
+        $d->actionUntil     = $actionUntil;
+        $d->applyLoyaltyDiscount  = (int)($shoptetRow['APPLY_LOYALTY_DISCOUNT'] ?? 1);
+        $d->applyVolumeDiscount   = (int)($shoptetRow['APPLY_VOLUME_DISCOUNT'] ?? 0);
+        $d->applyQuantityDiscount = (int)($shoptetRow['APPLY_QUANTITY_DISCOUNT'] ?? 1);
+        $d->applyDiscountCoupon   = (int)($shoptetRow['APPLY_DISCOUNT_COUPON'] ?? 0);
+
+        return $d;
     }
 }

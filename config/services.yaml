@@ -8,7 +8,9 @@ parameters:
         all: '%env(FEED_ALL_URL)%'
         inStock: '%env(FEED_INSTOCK_URL)%'
         shoptet: '%env(SHOPPET_FEED_URL)%'
-
+    
+    XmlFeedPath: '%env(resolve:XML_FEED_PATH)%'
+    
     feed.max_bytes: '%env(int:FEED_MAX_BYTES)%'
     baagl.legacy_category_php: '%kernel.project_dir%/var/baagl/category.php'
     baagl.ignore_regnum_path:  '%kernel.project_dir%/var/baagl/ignore_regnum.txt'
@@ -19,6 +21,9 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            string $xmlFeedPath: '%XmlFeedPath%'
+
         
     # Form <-> Validator glue (bez toho neexistuje volba "constraints")
     Symfony\Component\Form\Extension\Validator\ValidatorExtension:
