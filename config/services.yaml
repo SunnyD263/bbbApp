@@ -5,16 +5,19 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     feed.urls:
-        all: '%env(FEED_ALL_URL)%'
-        inStock: '%env(FEED_INSTOCK_URL)%'
-        shoptet: '%env(SHOPPET_FEED_URL)%'
+        BaaglAll: '%env(FEED_BAAGL_ALL_URL)%'
+        BaaglInStock: '%env(FEED_BAAGL_INSTOCK_URL)%'
+        Shoptet: '%env(FEED_SHOPTET_URL)%'
+
+    feed.activa_path: '%kernel.project_dir%/%env(string:FEED_ACTIVA_URL)%'
     
-    XmlFeedPath: '%env(resolve:XML_FEED_PATH)%'
+    xml_export_feed_path: '%env(string:XML_EXPORT_FEED_PATH)%'
     
     feed.max_bytes: '%env(int:FEED_MAX_BYTES)%'
-    baagl.legacy_category_php: '%kernel.project_dir%/var/baagl/category.php'
-    baagl.ignore_regnum_path:  '%kernel.project_dir%/var/baagl/ignore_regnum.txt'
-    baagl.image_slots:         21
+    activa.reg_num_path: '%kernel.project_dir%/%env(string:ACTIVA_REG_NUM_PATH)%'
+    baagl.legacy_category_php: '%kernel.project_dir%/%env(string:BAAGL_LEGACY_CATEGORY_PHP)%'
+    baagl.ignore_regnum_path: '%kernel.project_dir%/%env(string:BAAGL_IGNORE_REGNUM_PATH)%'
+    image_slots:         21
 
 services:
     # default configuration for services in *this* file
@@ -22,7 +25,7 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
-            string $xmlFeedPath: '%XmlFeedPath%'
+            $xmlExportFeedPath: '%xml_export_feed_path%'
 
         
     # Form <-> Validator glue (bez toho neexistuje volba "constraints")
@@ -77,13 +80,15 @@ services:
             $cache: '@cache.app'
             $logger: '@logger'
             $maxBytesDefault: '%feed.max_bytes%'
+            $projectDir: '%kernel.project_dir%'
 
     App\Service\FeedRegistry:
         calls:
-        - [ set, [ 'all', '%env(string:FEED_ALL_URL)%' ] ]
-        - [ set, [ 'instock', '%env(string:FEED_INSTOCK_URL)%' ] ]
-        - [ set, [ 'shoptet', '%env(string:SHOPPET_FEED_URL)%' ] ]
-
+        - [ set, [ 'BaaglAll', '%env(string:FEED_BAAGL_ALL_URL)%' ] ]
+        - [ set, [ 'BaaglInstock', '%env(string:FEED_BAAGL_INSTOCK_URL)%' ] ]
+        - [ set, [ 'Shoptet', '%env(string:FEED_SHOPTET_URL)%' ] ]
+        - [ set, [ 'ActivaAll', '%feed.activa_path%' ] ]
+        
     App\Service\FeedProvider:
         arguments:
             $client: '@App\Service\XmlFeedClient'
@@ -92,10 +97,19 @@ services:
     App\Service\Baagl\BaaglItemNormalizer:
         arguments:
             $ignoreRegnumPath: '%baagl.ignore_regnum_path%'
-            $imageSlots: '%baagl.image_slots%'
+            $imageSlots: '%image_slots%'
 
     App\Service\Baagl\LegacyCategoryResolver:
         arguments:
             $legacyFilePath: '%baagl.legacy_category_php%'
     
     App\Service\Baagl\BaaglShoptetUpdater: ~ 
+
+    App\Service\Activa\ActivaItemNormalizer:
+        arguments:
+            $regnumPath: '%activa.reg_num_path%'
+            $imageSlots: '%image_slots%'
+
+    App\Service\Activa\LegacyCategoryResolver:
+        arguments:
+            $legacyFilePath: '%baagl.legacy_category_php%'

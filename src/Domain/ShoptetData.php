@@ -25,6 +25,8 @@ final class ShoptetData
     public array $infoParameters = [];
     /** @var array<int, array{code:string,active:int}> */
     public array $flags = [];
+    /** @var array<int, array{name:string,value:float}> */
+    public array $logistic= [];
 
     // Viditelnost/SEO/platební
     public string  $visibility      = 'visible';
@@ -41,10 +43,10 @@ final class ShoptetData
     public ?string $productNumber  = null;
 
     // Logistika
-    public ?float $logDepth  = null;
-    public ?float $logWidth  = null;
-    public ?float $logHeight = null;
-    public ?float $logWeight = null;
+    public ?string $logDepth  = null;
+    public ?string $logWidth  = null;
+    public ?string $logHeight = null;
+    public ?string $logWeight = null;
     public int    $atypicalShipping = 0;
     public int    $atypicalBilling  = 0;
 
@@ -60,7 +62,7 @@ final class ShoptetData
 
     // Sklady
     /** @var array<int, array{name:string,value:int,location?:string}> */
-    public array $warehouses = [];
+    public array $stock = [];
     public ?int  $minimalAmount = null;
     public ?int  $maximalAmount = null;
 

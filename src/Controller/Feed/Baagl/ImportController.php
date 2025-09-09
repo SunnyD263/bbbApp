@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 final class ImportController extends AbstractController
 {
-    public function __construct(private string $XmlFeedPath) {}
+    public function __construct(private string $xmlExportFeedPath) {}
 
     #[Route('/feed/baagl/import', name: 'import_baagl', methods: ['GET','POST'])]
     public function __invoke(
@@ -32,8 +32,7 @@ final class ImportController extends AbstractController
         $form = $this->createForm(DefaultType::class);
         $form->handleRequest($request);
 
-        $result = null;
-        $xml = $feeds->fetch(FeedKind::Instock);
+        $xml = $feeds->fetch(FeedKind::BaaglInStock);
         $items = $normalizer->normalize($xml->items,'import');
         $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
 
@@ -41,11 +40,11 @@ final class ImportController extends AbstractController
         $m = $matcher->match($xmlShoptet,$items->item);
         // 2) Vytvoření chybějících
         foreach ($m['missing'] as $item) {            
-        $data[0] = $writer->add((array)$item, 'BAAGL');
+            $data[] = $writer->add((array)$item, 'BAAGL');
         }
 
         $xml = (new ShoptetXml())->build($data);
-        file_put_contents($this->XmlFeedPath, $xml);
+        file_put_contents($this->xmlExportFeedPath, $xml);
         // // 3) Update existujících
         // foreach ($m['matched'] as $code => $pair) {
         //     $writer->update((array) $pair['shopitem'], (array) $pair['item'], 'BAAGL');
@@ -64,7 +63,7 @@ final class ImportController extends AbstractController
 
         //$result = sprintf('Načteno položek: %d', $count);
 
-        return $this->render('feed/baagl/default.html.twig', [
+        return $this->render('feed/default.html.twig', [
             'form' => $form->createView(),
         ]);
     }

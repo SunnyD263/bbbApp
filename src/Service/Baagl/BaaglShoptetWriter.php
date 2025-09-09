@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service\Baagl;
 
+use App\Service\ShoptetWriterFunc;
 use App\Domain\ShoptetData;
 use Psr\Log\LoggerInterface;
 
@@ -13,28 +14,33 @@ final class BaaglShoptetWriter
 
     public function __construct(
         private LoggerInterface $logger,
-        private BaaglShoptetWriterFunc $fn,
+        private ShoptetWriterFunc $fn,
     ) {}
 
     /** Nová položka z feedu */
     public function add(array $row, string $warehouse): ShoptetData
     {
-        // Info parametry (rozměry/nosnost)
-        $infoParameters = [];
-        $this->fn->pushDim($infoParameters, 'Výška',   (string)($row['vyska']   ?? ''), 'cm');
-        $this->fn->pushDim($infoParameters, 'Šířka',   (string)($row['sirka']   ?? ''), 'cm');
-        $this->fn->pushDim($infoParameters, 'Hloubka', (string)($row['hloubka'] ?? ''), 'cm');
-        $this->fn->pushDim($infoParameters, 'Nosnost', (string)($row['nosnost'] ?? ''), 'kg');
+        $stockMainWh = 0;
+        $stockExtWh = (int) $row["stav"];
+
+        $parametrs = $this->fn->getParameters(
+            height:     (string)$row['vyska'],
+            width:      (string)$row['sirka'],
+            depth:      (string)$row['hloubka'],
+            weight:     (string)$row['hmotnost'],
+            material:   (string)$row['material'],
+            capacity:   (string)$row['nosnost']
+            
+        );
 
         // Sklady + dostupnost
-        $wh = $this->fn->getWhArray((int)($row['stav'] ?? 0), 'add');
-        $availability = $this->fn->getAvailability($wh['stockMainWh'], $wh['stockExtWh']);
-
+        $warehouseItem = $this->fn->getWhArray($stockMainWh, $stockExtWh , $warehouse, $location = '');
         // Obrázky do jednotného tvaru
         $images = $this->fn->mapFeedImages($row['obrazky']->obr ?? []);
 
         $d = new ShoptetData();
         $d->name         = (string)($row['nazev'] ?? '');
+        $d->seoTitle    = (string)($row['nazev'] ?? '');     
         $d->description  = (string)($row['popis'] ?? '');
         $d->code         = (string)($row['registracni_cislo'] ?? '');
         $d->manufacturer = self::COMPANY;
@@ -42,26 +48,27 @@ final class BaaglShoptetWriter
 
         $d->categories     = (array)$this->fn->getCategory((string)($row['category_name'] ?? ''));
         $d->images         = $images;
-        $d->unit           = (string)($row['merna_jednotka'] ?? 'ks');
-
-        $d->warehouses     = (array)$wh['result'];
+        $d->unit           = !empty($row['merna_jednotka']) ? (string)$row['merna_jednotka'] : 'ks';
+        $d->ean            = (string) $row["ean"];
         $d->vat            = (int)$this->fn->getVAT($row['dph'] ?? null);
         $d->currency       = (string)($row['mena'] ?? 'CZK');
         $d->priceVat       = isset($row['cena']) ? (float)$row['cena'] : null;
         $d->purchasePrice  = isset($row['nakupni_cena']) ? (float)$row['nakupni_cena'] : null;
         $d->standardPrice  = isset($row['cena']) ? (float)$row['cena'] : null;
 
-        $d->infoParameters = $infoParameters;
-
-        // Logistika
-        $d->logHeight = $this->fn->toFloatOrNull($row['vyska']    ?? null);
-        $d->logWidth  = $this->fn->toFloatOrNull($row['sirka']    ?? null);
-        $d->logDepth  = $this->fn->toFloatOrNull($row['hloubka']  ?? null);
-        $d->logWeight = $this->fn->toFloatOrNull($row['hmotnost'] ?? null);
+        $d->stock = $warehouseItem["stock"];
+        $d->minimalAmount =  null;
+        $d->maximalAmount =  null;
+        $d->infoParameters = $parametrs["infoParameter"];
+        $d->logistic = $parametrs["logistic"];        
+        // $d->logHeight = isset($parametrs["logistic"]["HEIGHT"]) ? $parametrs["logistic"]["HEIGHT"] : null;
+        // $d->logWidth = isset($parametrs["logistic"]["WIDTH"]) ? $parametrs["logistic"]["WIDTH"] : null;
+        // $d->logDepth = isset($parametrs["logistic"]["DEPTH"]) ? $parametrs["logistic"]["DEPTH"] : null;
+        // $d->logWeight =isset($parametrs["logistic"]["WEIGHT"]) ? $parametrs["logistic"]["WEIGHT"] : null;
 
         // Dostupnost/viditelnost
-        $d->availabilityIn = (string)$availability['availability'];
-        $d->visibility     = (string)$availability['visibility'];
+        $d->availabilityIn = (string)$warehouseItem["deposit"]["availability"];
+        $d->visibility     = (string)$warehouseItem["deposit"]["visibility"];
 
         return $d;
     }

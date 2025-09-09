@@ -18,10 +18,19 @@
     </li>
 
     <li>
+      <a href="#">Activa</a>
+      <ul>
+        <li><a href="{{ path('import_activa') }}">Nová Activa na Shoptet</a></li>
+        <li><a href="{{ path('update_activa') }}">Update Activa na Shoptetu</a></li>
+        <li><a href="{{ path('inbound_activa') }}">Naskladnění na Shoptet</a></li>
+      </ul>
+    </li>
+
+    <li>
       <a href="#">Shoptet</a>
       <ul>
         <li><a href="{{ path('import_baagl') }}">Nový Baagl na Shoptet</a></li>
-        <li><a href="{{ path('update_baagl') }}">Update Baagl ne Shoptetu</a></li>
+        <li><a href="{{ path('update_baagl') }}">Update Baagl na Shoptetu</a></li>
         <li><a href="{{ path('inbound_baagl') }}">Naskladnění na Shoptet</a></li>
         <li><a href="{{ path('missing_baagl') }}">Dohrání chybějících z naskladnění</a></li>
       </ul>

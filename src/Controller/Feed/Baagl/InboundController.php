@@ -6,7 +6,7 @@ use App\Service\FeedProvider;
 use App\Domain\FeedKind;
 use App\Domain\ShoptetXml;
 use App\Entity\Baagl\BaaglInbound;
-use App\Form\Baagl\InboundUploadType;
+use App\Form\InboundUploadType;
 use App\Service\Baagl\BaaglInboundTable;
 use App\Service\Baagl\BaaglInboundParser;
 use App\Service\Baagl\BaaglShoptetMatcher;
@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 final class InboundController extends AbstractController
 {
-    public function __construct(private string $XmlFeedPath) {}
+    public function __construct(private string $xmlExportFeedPath) {}
 
     #[Route('/feed/baagl/inbound', name: 'inbound_baagl', methods: ['GET','POST'])]
     public function inboundBaagl(
@@ -39,8 +39,6 @@ final class InboundController extends AbstractController
         $session = $request->getSession();
         $form = $this->createForm(InboundUploadType::class);
         $form->handleRequest($request);
-
-        $result = null;
 
         $action = $request->request->get('action');
 
@@ -105,11 +103,11 @@ final class InboundController extends AbstractController
 
             // 3) Update existujících
             foreach ($m['matched'] as $code => $pair) {
-            $data[] = $writer->inbound((array) $pair['shopitem'], (array) $pair['item'], 'Výchozí sklad');
+                $data[] = $writer->inbound((array) $pair['shopitem'], (array) $pair['item'], 'Výchozí sklad');
             }
 
             $xml = (new ShoptetXml())->build($data);
-            file_put_contents($this->XmlFeedPath, $xml);
+            file_put_contents($this->xmlExportFeedPath, $xml);
 
             $this->addFlash('success',
                 'Načtení položek objednávky. Vloženo %d položek.',

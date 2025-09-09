@@ -34,9 +34,6 @@ final class ShoptetXml
 
         // Základ
         ShoptetXmlFunc::addText($doc, $it, 'NAME', $d->name);
-        if ($d->guid) {
-            ShoptetXmlFunc::addText($doc, $it, 'GUID', $d->guid);
-        }
         ShoptetXmlFunc::addCdata($doc, $it, 'SHORT_DESCRIPTION', $d->shortDescription);
         ShoptetXmlFunc::addCdata($doc, $it, 'DESCRIPTION', $d->description);
         ShoptetXmlFunc::addText($doc, $it, 'MANUFACTURER', $d->manufacturer);
@@ -71,7 +68,11 @@ final class ShoptetXml
         ShoptetXmlFunc::addText($doc, $it, 'PRODUCT_NUMBER', $d->productNumber ?? $d->code);
 
         // Logistika
-        ShoptetXmlFunc::appendLogistic($doc, $it, $d);
+        ShoptetXmlFunc::appendLogistic($doc, $it, $d->logistic);
+        // ShoptetXmlFunc::addText($doc, $logistic, 'DEPTH', (string)$d->logHeight);
+        // ShoptetXmlFunc::addText($doc, $logistic, 'WIDTH', (string)$d->logWidth);
+        // ShoptetXmlFunc::addText($doc, $logistic, 'HEIGHT', (string)$d->logDepth);
+        // ShoptetXmlFunc::addText($doc, $logistic, 'WEIGHT', (string)$d->logWeight);
 
         // Atyp
         $atyp = $doc->createElement('ATYPICAL_PRODUCT');
@@ -87,8 +88,11 @@ final class ShoptetXml
         ShoptetXmlFunc::addText($doc, $it, 'STANDARD_PRICE', ShoptetXmlFunc::f($d->standardPrice));
 
         // Sklady
-        ShoptetXmlFunc::appendStock($doc, $it, $d);
-
+        $stockNode = $doc->createElement('STOCK');
+        ShoptetXmlFunc::appendStock($doc, $stockNode, $d->stock);
+        ShoptetXmlFunc::addText($doc, $stockNode, 'MINIMAL_AMOUNT', $d->minimalAmount);
+        ShoptetXmlFunc::addText($doc, $stockNode, 'MAXIMAL_AMOUNT', $d->maximalAmount);
+        $it->appendChild($stockNode);
         // Dostupnosti/viditelnosti
         ShoptetXmlFunc::addText($doc, $it, 'AVAILABILITY_OUT_OF_STOCK', $d->availabilityOut);
         ShoptetXmlFunc::addText($doc, $it, 'AVAILABILITY_IN_STOCK', $d->availabilityIn);

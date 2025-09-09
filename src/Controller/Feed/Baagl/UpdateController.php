@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 final class UpdateController extends AbstractController
 {
-    public function __construct(private string $XmlFeedPath) {}
+    public function __construct(private string $xmlExportFeedPath) {}
     
     #[Route('/feed/baagl/update', name: 'update_baagl', methods: ['GET'])]
     public function __invoke(
@@ -31,8 +31,7 @@ final class UpdateController extends AbstractController
         $form = $this->createForm(DefaultType::class);
         $form->handleRequest($request);
 
-        $result = null;
-        $xml = $feeds->fetch(FeedKind::All);
+        $xml = $feeds->fetch(FeedKind::BaaglAll);
         $items = $normalizer->normalize($xml->items,'update');
         $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
 
@@ -50,7 +49,7 @@ final class UpdateController extends AbstractController
         }
 
         $xml = (new ShoptetXml())->build($data);
-        file_put_contents($this->XmlFeedPath, $xml);
+        file_put_contents($this->xmlExportFeedPath, $xml);
 
         // $importer->rebuild();
         // $inserted = $importer->insertFromItems((array)$items ?? []);
@@ -63,7 +62,7 @@ final class UpdateController extends AbstractController
 
         //$result = sprintf('Načteno položek: %d', $count);
 
-        return $this->render('feed/baagl/default.html.twig', [
+        return $this->render('feed/default.html.twig', [
             'form' => $form->createView(),
         ]);
     }

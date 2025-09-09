@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SHOP>
+    <SHOPITEM>
+        <CATEGORYTEXT>Katalog|Kreativní potřeby|Kreativní sady|Kreativní sada Avenue Mandarine
+            Dětské šití</CATEGORYTEXT>
+        <ITEMGROUP_ID>246460</ITEMGROUP_ID>
+        <PRODUCTNAME>Kreativní sada Avenue Mandarine Dětské šití - pejsek Enzo</PRODUCTNAME>
+        <PRICE>309.92</PRICE>
+        <PRICE_VAT>375.00</PRICE_VAT>
+        <URL>
+            https://activacek.cz/produkt/kreativni-sada-avenue-mandarine-detske-siti-pejsek-enzo-764360/</URL>
+        <IMGURL>https://i.actva.cz/i/1/1/fce/6afce/1200x1200/A63Izd_1200x1200_4ab869a1fdef2880.png</IMGURL>
+        <MANUFACTURER>Avenue Mandarine</MANUFACTURER>
+        <EAN>3609510541170</EAN>
+        <ITEM_ID>0144/0010117</ITEM_ID>
+        <DESCRIPTION>Kreativní sada Avenue Mandarine Dětské šití z kolekce Couz&apos;IN, která
+            umožňuje dětem objevení světa šití. Předem nastříhané kusy měkké barevné plsti s malými
+            otvory usnadňují dětem použití jehly.</DESCRIPTION>
+        <LONG_DESCRIPTION>SADA OBSAHUJE:, * proděrované kusy plsti, * lepící kusy plsti, *
+            vycpávkovou vatu, * plastovou jehlu, * 3 nebo 4 špulky nití, * návod, VHODNÉ PRO DĚTI OD
+            6-10 LET., ROZMĚRY BALENÍ: 14 X 24 CM</LONG_DESCRIPTION>
+        <VAT>21</VAT>
+        <WIDTH>15.8</WIDTH>
+        <HEIGHT>24.1</HEIGHT>
+        <LENGTH>5.1</LENGTH>
+        <WEIGHT>0.0399</WEIGHT>
+        <STOCKCOUNT>Více než 10 ks</STOCKCOUNT>
+        <CUSTOMER_PRICE>217.00</CUSTOMER_PRICE>
+        <UNITS_PER_PARCEL>0</UNITS_PER_PARCEL>
+        <IMGURL_ALTERNATIVE>
+            https://i.actva.cz/i/1/1/fcf/6afcf/1200x1200/fxveFK_1200x1200_e5dd9f33556af3c6.jpg</IMGURL_ALTERNATIVE>
+        <IMGURL_ALTERNATIVE>
+            https://i.actva.cz/i/1/1/fd0/6afd0/1200x1200/uOeg6U_1200x1200_e2c6fed422d2523e.png</IMGURL_ALTERNATIVE>
+        <IMGURL_ALTERNATIVE>
+            https://i.actva.cz/i/1/1/fd1/6afd1/1200x1200/KNlU5b_1200x1200_f9f95770ae16f681.jpg</IMGURL_ALTERNATIVE>
+    </SHOPITEM>
+    <SHOPITEM>
+        <CATEGORYTEXT>Katalog|Kreativní potřeby|Vyškrabávací obrázky|Vyškrabávací obrázky Djeco</CATEGORYTEXT>
+        <ITEMGROUP_ID>244720</ITEMGROUP_ID>
+        <PRODUCTNAME>Vyškrabávací obrázky Djeco - Vesmírná mise</PRODUCTNAME>
+        <PRICE></PRICE>
+        <PRICE_VAT></PRICE_VAT>
+        <URL>https://activacek.cz/produkt/vyskrabavaci-obrazky-djeco-vesmirna-mise-594810/</URL>
+        <IMGURL>https://i.actva.cz/i/1/1/68e/3b68e/600x600/tGqi0T_600x600_7cfcc449e34aefd9.jpg</IMGURL>
+        <MANUFACTURER>Djeco</MANUFACTURER>
+        <EAN>3070900097278</EAN>
+        <ITEM_ID>0144/0109727</ITEM_ID>
+        <DESCRIPTION>
+            Obrázky, které se objeví po setření krycí vrstvy. Hotový obrázek je skrytý v předloze a
+            objeví se až po vyškrábání motivů, takže pro vás bude překvapením.
+        </DESCRIPTION>
+        <LONG_DESCRIPTION>SADA OBSAHUJE:, * 4 kartičky se skrytým obrázkem, * vyškrabávací pero, *
+            detailní ilustrovaný návod, Rozměry balení 21,5 x 23 cm., Zábavná a relaxační činnost i
+            pro dospělé!</LONG_DESCRIPTION>
+        <VAT>21</VAT>
+        <WIDTH>21.7</WIDTH>
+        <HEIGHT>22.8</HEIGHT>
+        <LENGTH>0.3</LENGTH>
+        <WEIGHT>0.0274</WEIGHT>
+        <STOCKCOUNT>Více než 5 ks</STOCKCOUNT>
+        <CUSTOMER_PRICE>113.00</CUSTOMER_PRICE>
+        <UNITS_PER_PARCEL>0</UNITS_PER_PARCEL>
+        <IMGURL_ALTERNATIVE>
+            https://i.actva.cz/i/1/1/68f/3b68f/600x600/Q6Hqia_600x600_29ebbbb4e9c39f39.jpg</IMGURL_ALTERNATIVE>
+    </SHOPITEM>
+</SHOP>
