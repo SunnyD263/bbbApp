@@ -5,6 +5,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Symfony\Component\Filesystem\Path; 
 
 final class XmlFeedClient
 {
@@ -13,6 +14,7 @@ final class XmlFeedClient
         private CacheInterface $cache,
         private ?LoggerInterface $logger = null,
         private int $maxBytesDefault = 5_000_000, // <- bude přepsáno z .env
+        private string $projectDir,
     ) {}
 
     public function fetchSimpleXml(
@@ -25,7 +27,11 @@ final class XmlFeedClient
     ): \SimpleXMLElement {
         $maxBytes = $maxBytes ?? $this->maxBytesDefault;
 
-        $cacheKey = 'xml_payload_' . md5($url);
+
+
+        $sourceKey = $this->isHttpUrl($url) ? $url : $this->resolveLocalPath($url);
+        $cacheKey  = 'xml_payload_' . md5($sourceKey);
+
         $payload = $this->cache->get($cacheKey, function ($item) use ($url, $timeout, $retries, $maxBytes, $xsdPath, $cacheTtl) {
             $item->expiresAfter($cacheTtl);
 
@@ -64,6 +70,37 @@ final class XmlFeedClient
 
     private function downloadWithRetry(string $url, int $timeout, int $retries, int $maxBytes): string
     {
+        // --- LOKÁLNÍ SOUBOR -----------------------------------------------------
+        // Podpora file:/// i prosté cesty (relativní/absolutní, Windows i Unix)
+        if (!\preg_match('~^https?://~i', $url)) {
+            if (\str_starts_with($url, 'file:///')) {
+                // file:///G:/... nebo file:///var/...
+                $url = \substr($url, 8); // odřízne "file:///"
+            }
+
+            // Relativní cesta -> absolutní vůči projectDir + normalizace oddělovačů
+            $abs = \Symfony\Component\Filesystem\Path::makeAbsolute($url, $this->projectDir);
+            $abs = \Symfony\Component\Filesystem\Path::normalize($abs);
+
+            if (!\is_file($abs)) {
+                throw new \RuntimeException("Feed path not found: {$abs}");
+            }
+
+            $size = @\filesize($abs);
+            if ($size !== false && $size > $maxBytes) {
+                throw new \RuntimeException("Soubor přesáhl limit {$maxBytes} B (má {$size} B).");
+            }
+
+            $content = @\file_get_contents($abs);
+            if ($content === false) {
+                $err = \error_get_last()['message'] ?? 'neznámá chyba';
+                throw new \RuntimeException("Nelze číst soubor: {$abs} ({$err})");
+            }
+
+            return $content; // Lokální větev končí zde
+        }
+
+        // --- HTTP/HTTPS ---------------------------------------------------------
         $attempt = 0; $lastEx = null;
 
         while ($attempt <= $retries) {
@@ -78,8 +115,8 @@ final class XmlFeedClient
 
                 $status = $response->getStatusCode(false);
                 if ($status < 200 || $status >= 300) {
-                    if (in_array($status, [429, 500, 502, 503, 504], true) && $attempt < $retries) {
-                        usleep((200 * (2 ** $attempt)) * 1000);
+                    if (\in_array($status, [429, 500, 502, 503, 504], true) && $attempt < $retries) {
+                        \usleep((200 * (2 ** $attempt)) * 1000);
                         $attempt++; continue;
                     }
                     throw new \RuntimeException("HTTP $status při stahování $url");
@@ -91,7 +128,7 @@ final class XmlFeedClient
                 foreach ($this->http->stream($response) as $chunk) {
                     if ($chunk->isTimeout()) continue;
                     $buffer .= $chunk->getContent();
-                    if (strlen($buffer) > $maxBytes) {
+                    if (\strlen($buffer) > $maxBytes) {
                         throw new \RuntimeException("Odpověď přesáhla limit {$maxBytes} bajtů.");
                     }
                 }
@@ -100,13 +137,18 @@ final class XmlFeedClient
             } catch (\Throwable $e) {
                 $lastEx = $e;
                 if ($attempt < $retries) {
-                    $this->logger?->warning('XML fetch retry', ['url' => $url, 'attempt' => $attempt + 1, 'error' => $e->getMessage()]);
-                    usleep((200 * (2 ** $attempt)) * 1000);
+                    $this->logger?->warning('XML fetch retry', [
+                        'url' => $url,
+                        'attempt' => $attempt + 1,
+                        'error' => $e->getMessage()
+                    ]);
+                    \usleep((200 * (2 ** $attempt)) * 1000);
                     $attempt++; continue;
                 }
                 break;
             }
         }
+
         throw new \RuntimeException('Selhalo stahování XML: ' . ($lastEx?->getMessage() ?? 'neznámá chyba'), 0, $lastEx);
     }
 
@@ -117,4 +159,16 @@ final class XmlFeedClient
             throw new \RuntimeException("Neočekávaný Content-Type: {$ct}");
         }
     }
+
+    private function isHttpUrl(string $s): bool
+        {
+            return (bool)\preg_match('~^https?://~i', $s);
+        }
+
+    private function resolveLocalPath(string $path): string
+        {
+            // relativní -> absolutní vůči projectDir + normalizace (vyřeší / \ a ..)
+            $abs = Path::makeAbsolute($path, $this->projectDir);
+            return Path::normalize($abs);
+        }
 }

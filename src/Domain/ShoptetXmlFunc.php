@@ -106,36 +106,27 @@ final class ShoptetXmlFunc
         $item->appendChild($wrap);
     }
 
-    public static function appendLogistic(DOMDocument $doc, DOMElement $item, ShoptetData $d): void
+    public static function appendLogistic(DOMDocument $doc, DOMElement $item, array $logistic): void
     {
-        if ($d->logDepth === null && $d->logWidth === null && $d->logHeight === null && $d->logWeight === null) {
-            return;
-        }
         $log = $doc->createElement('LOGISTIC');
-        self::addText($doc, $log, 'DEPTH',  self::f($d->logDepth));
-        self::addText($doc, $log, 'WIDTH',  self::f($d->logWidth));
-        self::addText($doc, $log, 'HEIGHT', self::f($d->logHeight));
-        self::addText($doc, $log, 'WEIGHT', self::f($d->logWeight));
+        foreach ($logistic as $key => $w) {
+            self::addText($doc, $log, $key, (string)$w);
+        }
         $item->appendChild($log);
+
     }
 
-    public static function appendStock(DOMDocument $doc, DOMElement $item, ShoptetData $d): void
+    public static function appendStock(DOMDocument $doc, DOMElement $item, array $stock): void
     {
-        $stock = $doc->createElement('STOCK');
-
         $whs = $doc->createElement('WAREHOUSES');
-        foreach ($d->warehouses as $w) {
+        foreach ($stock as $w) {
             $wh = $doc->createElement('WAREHOUSE');
             self::addText($doc, $wh, 'NAME', $w['name'] ?? '');
             self::addText($doc, $wh, 'VALUE', isset($w['value']) ? (string)$w['value'] : '0');
             self::addText($doc, $wh, 'LOCATION', $w['location'] ?? '');
             $whs->appendChild($wh);
         }
-        $stock->appendChild($whs);
+        $item->appendChild($whs);
 
-        self::addText($doc, $stock, 'MINIMAL_AMOUNT', $d->minimalAmount !== null ? (string)$d->minimalAmount : '');
-        self::addText($doc, $stock, 'MAXIMAL_AMOUNT', $d->maximalAmount !== null ? (string)$d->maximalAmount : '');
-
-        $item->appendChild($stock);
     }
 }

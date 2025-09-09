@@ -1,0 +1,11 @@
+{# templates/feed/baagl/default.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  {% for label, messages in app.flashes %}
+    {% for msg in messages %}
+      <div class="alert alert-{{ label }}">{{ msg }}</div>
+    {% endfor %}
+  {% endfor %}
+
+{% endblock %}
