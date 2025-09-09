@@ -183,7 +183,7 @@ final class ShoptetWriterFunc
     }
 
     /** Feed: SimpleXMLElement|array|string -> [['url'=>..., 'description'=>null], ...] */
-    public function mapFeedImages(mixed $images): array
+    public function mapFeedImages(mixed $images, mixed $alternativeImages = null): array
     {
         $out = [];
         if ($images instanceof SimpleXMLElement || is_array($images)) {
