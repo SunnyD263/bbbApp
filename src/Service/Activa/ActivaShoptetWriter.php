@@ -20,22 +20,38 @@ final class ActivaShoptetWriter
     /** Nová položka z feedu */
     public function add(array $row, string $warehouse): ShoptetData
     {
-        // Info parametry (rozměry/nosnost)
-        $infoParameters = [];
-        $this->fn->pushDim($infoParameters, 'Výška',   (string)($row["WIDTH"]  ?? ''), 'cm');
-        $this->fn->pushDim($infoParameters, 'Šířka',   (string)($row["HEIGHT"]   ?? ''), 'cm');
-        $this->fn->pushDim($infoParameters, 'Hloubka', (string)($row["LENGTH"] ?? ''), 'cm');
-        $this->fn->pushDim($infoParameters, 'Nosnost', (string)($row["WEIGHT"] ?? ''), 'kg');
+
+        $stockMainWh = 0;
+        $stockExtWh =  0;
+        // Info parametry (rozměry/nosnost)      
+        $parametrs = $this->fn->getParameters(
+            height:     (string)$row["WIDTH"],
+            width:      (string)$row["HEIGHT"],
+            depth:      (string)$row["LENGTH"],
+            weight:     (string)$row["WEIGHT"],
+        //material:   (string)$row['material'],
+        //capacity:   (string)$row['nosnost']
+            
+        );
+        $imagesUrl = array_filter(array_map(function ($val) {
+            if (is_array($val)) {
+                // Pokud přijde pole, zkusíme ho převést na string (např. první prvek nebo join)
+                return trim(implode(',', $val));
+            }
+            return trim((string)$val);
+        }, [
+            $row["IMGURL"] ?? '',
+            $row["IMGURL_ALTERNATIVE"] ?? '',
+        ]));
 
         // Sklady + dostupnost
-        $wh = $this->fn->getWhArray((int)($row['stav'] ?? 0), 'add');
-        $availability = $this->fn->getAvailability($wh['stockMainWh'], $wh['stockExtWh']);
-
+        $warehouseItem = $this->fn->getWhArray($stockMainWh, $stockExtWh , $warehouse, $location = '');
         // Obrázky do jednotného tvaru
-        $images = $this->fn->mapFeedImages($row["IMGURL"] ?? []);
+        $images = $this->fn->mapFeedImages($imagesUrl ?? []);
 
         $d = new ShoptetData();
         $d->name         = (string)($row["PRODUCTNAME"] ?? '');
+        $d->seoTitle    = (string)($row["PRODUCTNAME"] ?? '');     
         $d->description  = (string)($row["LONG_DESCRIPTION"]?? '');
         $d->shortDescription = (string)($row["DESCRIPTION"] ?? '');
         $d->code         = (string)($row["ITEM_ID"]?? '');
@@ -52,17 +68,14 @@ final class ActivaShoptetWriter
         $d->purchasePrice  = isset($row["CUSTOMER_PRICE"]) ? (float)$row["CUSTOMER_PRICE"] : null;
         $d->standardPrice  = isset($row["PRICE_VAT"]) ? (float)$row["PRICE_VAT"] : null;
 
-        $d->infoParameters = $infoParameters;
+        $d->stock = $warehouseItem["stock"];
+        $d->minimalAmount =  null;
+        $d->maximalAmount =  null;
+        $d->infoParameters = $parametrs["infoParameter"];
+        $d->logistic = $parametrs["logistic"];  
 
-        // Logistika
-        $d->logHeight = $this->fn->toFloatOrNull($row["WIDTH"]  ?? null);
-        $d->logWidth  = $this->fn->toFloatOrNull($row["HEIGHT"] ?? null);
-        $d->logDepth  = $this->fn->toFloatOrNull($row["LENGTH"] ?? null);
-        $d->logWeight = $this->fn->toFloatOrNull($row["WEIGHT"] ?? null);
-
-        // Dostupnost/viditelnost
-        $d->availabilityIn = (string)$availability['availability'];
-        $d->visibility     = (string)$availability['visibility'];
+        $d->availabilityIn = (string)$warehouseItem["deposit"]["availability"];
+        $d->visibility     = (string)$warehouseItem["deposit"]["visibility"];
 
         return $d;
     }
