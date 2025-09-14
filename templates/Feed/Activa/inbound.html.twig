@@ -1,0 +1,82 @@
+{# templates/feed/baagl/inbound.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Inbound Baagl{% endblock %}
+
+{% block body %}
+
+
+  <h3>Načíst položky z HTML souboru</h3>
+  {{ form_start(form) }}
+    {{ form_row(form.pdf_file) }}
+    <br>
+    <button class="btn" name="action" value="load">Načíst</button>
+  {{ form_end(form) }}
+
+    <br>
+
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="flash-{{ label }}">{{ message }}</div>
+    {% endfor %}
+  {% endfor %}
+
+  {% if result is defined and result %}
+    <div class="mt-6">
+
+      {# FORM 2: Generovat #}
+      <form method="post" action="{{ path('inbound_baagl') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('inbound_generate') }}">
+        <button class="btn" name="action" value="generate">Generovat</button>
+      </form>
+      
+      <br>
+      <h3>Počet kusů objednávky - {{ result.sumQty }} položek</h3>
+      <h3>Hodnota objednávky s DPH - {{ result.sumPrice|number_format(2, ',', ' ') }} Kč</h3>
+
+      <button onclick="const e=document.getElementById('orderDetails'); e.style.display = (e.style.display==='none' ? 'block' : 'none');">
+        Zobrazit / skrýt detaily
+      </button>
+
+      <div id="orderDetails" style="display:block">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Kód</th><th>Název</th><th>MJ</th><th>Množství</th>
+              <th>Cena za ks bez DPH</th><th>Daň</th><th>Cena bez DPH</th><th>Součet s DPH</th><th>Měna</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for item in result.items %}
+            <tr>
+              <td>{{ item.code }}</td>
+              <td>{{ item.name }}</td>
+              <td>ks</td>
+              <td>{{ item.qty }}</td>
+              <td>{{ item.unitPrice|number_format(2, ',', ' ') }}</td>
+              <td>{{ item.vat|number_format(2, ',', ' ') }}</td>              
+              <td>{{ item.priceWithoutVat|number_format(2, ',', ' ') }}</td>
+              <td>{{ item.priceVatSum|number_format(2, ',', ' ') }}</td>
+              <td>Kč</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td><strong>Součet</strong></td>
+              <td></td>
+              <td><strong>{{ result.sumQty }}</strong></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td><strong>{{ result.sumPrice|number_format(2, ',', ' ') }}</strong></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+
+{% endblock %}

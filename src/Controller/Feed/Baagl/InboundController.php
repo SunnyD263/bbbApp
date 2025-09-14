@@ -6,7 +6,7 @@ use App\Service\FeedProvider;
 use App\Domain\FeedKind;
 use App\Domain\ShoptetXml;
 use App\Entity\Baagl\BaaglInbound;
-use App\Form\InboundUploadType;
+use App\Form\Baagl\InboundUploadType;
 use App\Service\Baagl\BaaglInboundTable;
 use App\Service\Baagl\BaaglInboundParser;
 use App\Service\Baagl\BaaglShoptetMatcher;
@@ -39,6 +39,7 @@ final class InboundController extends AbstractController
         $session = $request->getSession();
         $form = $this->createForm(InboundUploadType::class);
         $form->handleRequest($request);
+        $result = [];
 
         $action = $request->request->get('action');
 

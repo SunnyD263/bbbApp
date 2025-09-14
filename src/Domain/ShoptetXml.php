@@ -4,7 +4,7 @@ namespace App\Domain;
 
 use DOMDocument;
 use DOMElement;
-use function App\Domain\ShoptetXmlFunc\addText; // (jen pro případ importu funkcí – nepoužíváme zde)
+use function App\Domain\ShoptetXmlFunc\addText;
 
 final class ShoptetXml
 {

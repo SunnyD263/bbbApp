@@ -6,7 +6,8 @@ use App\Service\FeedProvider;
 use App\Domain\FeedKind;
 use App\Domain\ShoptetXml;
 use App\Entity\Activa\ActivaInbound;
-use App\Form\InboundUploadType;
+use App\Form\Activa\InboundUploadType;
+use App\Service\Activa\ActivaInboundParser;
 use App\Service\Activa\ActivaShoptetMatcher;
 use App\Service\Activa\ActivaShoptetWriter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,6 +27,7 @@ final class InboundController extends AbstractController
         Request $request,
         FeedProvider $feeds,
         EntityManagerInterface $em,
+        ActivaInboundParser $parser,
         ActivaShoptetMatcher $matcher,
         SerializerInterface $serializer,
         ActivaShoptetWriter $writer,
@@ -35,32 +37,31 @@ final class InboundController extends AbstractController
         $session = $request->getSession();
         $form = $this->createForm(InboundUploadType::class);
         $form->handleRequest($request);
+        $result= [];
 
         $action = $request->request->get('action');
 
-        //***\src\Service\Baagl\BaaglInboundTable.php***
-        // if ($request->isMethod('GET')) { $importer->rebuild(); } 
 
         if ($action === 'load' && $form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile|null $file */
-            $file = $form->get('html_file')->getData();
+            $file = $form->get('pdf_file')->getData();
 
             if (!$file instanceof UploadedFile) {
                 $this->addFlash('danger', 'Soubor nebyl nahrán.');
-                return $this->render('feed/baagl/inbound.html.twig', [
+                return $this->render('feed/activa/inbound.html.twig', [
                     'form'      => $form->createView(),
                     'result'    => $result,
                     'resultJson'=> $result ? json_encode($result, JSON_UNESCAPED_UNICODE) : null,
                 ]);
             }
 
-            // Získej obsah HTML pro parser
-            $html = file_get_contents($file->getPathname());
+            // Získej obsah pdf pro parser
+            $path = $file->getPathname();
                                 
-            //***\src\Service\Baagl\BaaglInboundParser.php***
-            $parsed = $parser->parseHtml($html);
+            //***\src\Service\Activa\ActivaInboundParser.php***
+            $parsed = $parser->parseFromPath($path);
 
-            //***\src\Service\Baagl\BaaglInboundTable.php***
+            //***\src\Service\Activa\ActivaInboundTable.php***
             // $inserted = $importer->insertFromItems($parsed['items'] ?? []);
 
             $session->set('inbound_result', $parsed);
@@ -110,10 +111,10 @@ final class InboundController extends AbstractController
                 'chyba'
             );
 
-            return $this->redirectToRoute('inbound_baagl');
+            return $this->redirectToRoute('inbound_activa');
         }
 
-        return $this->render('feed/baagl/inbound.html.twig', [
+        return $this->render('feed/activa/inbound.html.twig', [
             'form'       => $form->createView(),
             'result'     => $result,
             'resultJson' => $result ? json_encode($result, JSON_UNESCAPED_UNICODE) : null,

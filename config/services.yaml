@@ -52,8 +52,6 @@ services:
         arguments: ['@validator.mapping.class_metadata_factory']
         tags: ['form.type_guesser']
 
-    App\EventSubscriber\ExceptionConsoleSubscriber:
-        tags: ['kernel.event_subscriber']
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -113,3 +111,7 @@ services:
     App\Service\Activa\LegacyCategoryResolver:
         arguments:
             $legacyFilePath: '%baagl.legacy_category_php%'
+
+    Smalot\PdfParser\Parser: ~
+    App\Utility\PdfTextExtractor: ~
+    App\Service\Activa\ActivaInboundParser: ~
