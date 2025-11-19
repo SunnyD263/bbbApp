@@ -21,18 +21,35 @@ final class ActivaShoptetWriter
     public function add(array $row, string $warehouse): ShoptetData
     {
 
-        $stockMainWh = 0;
-        $stockExtWh =  0;
-        // Info parametry (rozměry/nosnost)      
+        // 1) Zjednotit názvy klíčů (někdy chodí width/Width/WIDTH)
+        $row = $row["item"];
+
+        // 2) Sanitizace hodnot – prázdné řetězce → null
+        $clean = static function ($v): ?string {
+            if ($v === null) return null;
+            $s = trim((string)$v);
+            return $s === '' ? null : $s;
+        };
+
+        // 3) Bezpečný přístup ke klíčům (?? v PHP nevyhazuje notice)
+        $width  = $clean($row->WIDTH  ?? null);   // šířka
+        $height = $clean($row->HEIGHT ?? null);   // výška
+        $depth  = $clean($row->LENGTH ?? null);   // hloubka
+        $weight = $clean($row->WEIGHT ?? null);   // hmotnost
+
+        // POZOR: měl jsi je prohozené (height z WIDTH a width z HEIGHT)
         $parametrs = $this->fn->getParameters(
-            height:     (string)$row["WIDTH"],
-            width:      (string)$row["HEIGHT"],
-            depth:      (string)$row["LENGTH"],
-            weight:     (string)$row["WEIGHT"],
-        //material:   (string)$row['material'],
-        //capacity:   (string)$row['nosnost']
-            
+            width:  $width,
+            height: $height,
+            depth:  $depth,
+            weight: $weight,
+            // material: $clean($row['MATERIAL'] ?? null),
+            // capacity: $clean($row['NOSNOST'] ?? null),
         );
+
+        $stockMainWh = 0;
+        $stockExtWh  = 0;
+
         $imagesUrl = array_filter(array_map(function ($val) {
             if (is_array($val)) {
                 // Pokud přijde pole, zkusíme ho převést na string (např. první prvek nebo join)
@@ -40,39 +57,38 @@ final class ActivaShoptetWriter
             }
             return trim((string)$val);
         }, [
-            $row["IMGURL"] ?? '',
-            $row["IMGURL_ALTERNATIVE"] ?? '',
+            $row->IMGURL ?? '',
+            $row->IMGURL_ALTERNATIVE ?? '',
         ]));
 
         // Sklady + dostupnost
         $warehouseItem = $this->fn->getWhArray($stockMainWh, $stockExtWh , $warehouse, $location = '');
         // Obrázky do jednotného tvaru
         $images = $this->fn->mapFeedImages($imagesUrl ?? []);
-
         $d = new ShoptetData();
-        $d->name         = (string)($row["PRODUCTNAME"] ?? '');
-        $d->seoTitle    = (string)($row["PRODUCTNAME"] ?? '');     
-        $d->description  = (string)($row["LONG_DESCRIPTION"]?? '');
-        $d->shortDescription = (string)($row["DESCRIPTION"] ?? '');
-        $d->code         = (string)($row["ITEM_ID"]?? '');
-        $d->manufacturer = $row["MANUFACTURER"];
+        $d->name         = (string)($row->PRODUCTNAME ?? '');
+        $d->seoTitle    = (string)($row->PRODUCTNAME ?? ''); 
+        $d->code        = (string)($row->ITEM_ID ?? '');  
+        $d->description  = (string)($row->LONG_DESCRIPTION ?? '');
+        $d->shortDescription = (string)($row->DESCRIPTION ?? '');
+        $d->manufacturer = (string) $row->MANUFACTURER;
         $d->supplier     = self::COMPANY;
-        $d->ean          = $row["EAN"];
+        $d->ean          = (string) $row->EAN;
 
         $d->categories     = (array)$this->fn->getCategory((string)($row['category_name'] ?? 'Školní potřeby > Psací potřeby'));
         $d->images         = $images;
-        $d->unit           = !empty($row['merna_jednotka']) ? (string)$row['merna_jednotka'] : 'ks';
-        $d->vat            = (int) $row["VAT"];
-        $d->currency       = (string)($row['mena'] ?? 'CZK');
-        $d->priceVat       = isset($row["PRICE_VAT"]) ? (float)$row["PRICE_VAT"] : null;
-        $d->purchasePrice  = isset($row["CUSTOMER_PRICE"]) ? (float)$row["CUSTOMER_PRICE"] : null;
-        $d->standardPrice  = isset($row["PRICE_VAT"]) ? (float)$row["PRICE_VAT"] : null;
+        $d->unit           = (string) ('ks');
+        $d->vat            = (int) $row->VAT;
+        $d->currency       = (string)('CZK');
+        $d->priceVat       = isset($row->PRICE) ? (float)$row->PRICE : null;
+        $d->purchasePrice  = isset($row->CUSTOMER_PRICE) ? (float)$row->CUSTOMER_PRICE : null;
+        $d->standardPrice  = isset($row->PRICE) ? (float)$row->PRICE : null;
 
         $d->stock = $warehouseItem["stock"];
         $d->minimalAmount =  null;
         $d->maximalAmount =  null;
         $d->infoParameters = $parametrs["infoParameter"];
-        $d->logistic = $parametrs["logistic"];  
+        $d->logistic = (array) $parametrs["logistic"];  
 
         $d->availabilityIn = (string)$warehouseItem["deposit"]["availability"];
         $d->visibility     = (string)$warehouseItem["deposit"]["visibility"];

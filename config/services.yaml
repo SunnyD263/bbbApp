@@ -7,7 +7,10 @@ parameters:
     feed.urls:
         BaaglAll: '%env(FEED_BAAGL_ALL_URL)%'
         BaaglInStock: '%env(FEED_BAAGL_INSTOCK_URL)%'
-        Shoptet: '%env(FEED_SHOPTET_URL)%'
+        ShoptetBaagl: '%env(FEED_SHOPTET_URL_BAAGL)%'
+        ShoptetActiva: '%env(FEED_SHOPTET_URL_ACTIVA)%'
+        ActivaAll: '%env(FEED_ACTIVA_URL)%'
+        
 
     feed.activa_path: '%kernel.project_dir%/%env(string:FEED_ACTIVA_URL)%'
     
@@ -84,8 +87,9 @@ services:
         calls:
         - [ set, [ 'BaaglAll', '%env(string:FEED_BAAGL_ALL_URL)%' ] ]
         - [ set, [ 'BaaglInstock', '%env(string:FEED_BAAGL_INSTOCK_URL)%' ] ]
-        - [ set, [ 'Shoptet', '%env(string:FEED_SHOPTET_URL)%' ] ]
-        - [ set, [ 'ActivaAll', '%feed.activa_path%' ] ]
+        - [ set, [ 'ShoptetBaagl', '%env(string:FEED_SHOPTET_URL_BAAGL)%' ] ]
+        - [ set, [ 'ShoptetActiva', '%env(string:FEED_SHOPTET_URL_ACTIVA)%' ] ]
+        - [ set, [ 'ActivaAll', '%env(string:FEED_ACTIVA_URL)%' ] ]
         
     App\Service\FeedProvider:
         arguments:

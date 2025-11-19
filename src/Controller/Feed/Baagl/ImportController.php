@@ -34,7 +34,7 @@ final class ImportController extends AbstractController
 
         $xml = $feeds->fetch(FeedKind::BaaglInStock);
         $items = $normalizer->normalize($xml->items,'import');
-        $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
+        $xmlShoptet = $feeds->fetch(FeedKind::ShoptetBaagl);
 
         // 1) Rozdělení        
         $m = $matcher->match($xmlShoptet,$items->item);

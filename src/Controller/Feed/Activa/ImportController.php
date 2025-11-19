@@ -32,17 +32,21 @@ final class ImportController extends AbstractController
 
         $xml = $feeds->fetch(FeedKind::ActivaAll);
         $items = $normalizer->normalize($xml,'import');
-        $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
+
+        $xmlShoptet = $feeds->fetch(FeedKind::ShoptetActiva);
 
         // 1) Rozdělení        
         $m = $matcher->match($xmlShoptet,$items->SHOPITEM);
         // 2) Vytvoření chybějících
-        foreach ($m['missing'] as $item) {            
-        $data[] = $writer->add((array)$item, 'ACTIVA');
+        if (!empty($m['missing'])){
+            foreach ($m['missing'] as $item) {            
+            $data[] = $writer->add((array)$item, 'ACTIVA');
+            }
+            $xmlExport = (new ShoptetXml())->build($data);
+            file_put_contents($this->xmlExportFeedPath, $xmlExport);
+        } else {
+            echo "žádná změna";
         }
-
-        $xml = (new ShoptetXml())->build($data);
-        file_put_contents($this->xmlExportFeedPath, $xml);
 
         return $this->render('feed/default.html.twig', [
             'form' => $form->createView(),

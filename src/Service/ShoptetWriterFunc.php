@@ -36,8 +36,8 @@ final class ShoptetWriterFunc
 
     public function getParameters(
         ?string $height = null,
-        ?string $width = null,
-        ?string $depth = null,
+        ?string $width  = null,
+        ?string $depth  = null,
         ?string $weight = null,
         ?string $material = null,
         ?string $capacity = null
@@ -45,17 +45,18 @@ final class ShoptetWriterFunc
         $info = [];
         $logistic = [];
 
-        // Přidá jen tehdy, když hodnota NENÍ null / prázdná / „0“
-        $this->addNode($info, 'Výška',   $height,   'cm');
-        $this->addNode($info, 'Šířka',   $width,    'cm');
-        $this->addNode($info, 'Hloubka', $depth,    'cm');
-        $this->addNode($info, 'Nosnost', $capacity, 'kg');
-        $this->addNode($info, 'Materiál',$material);
+        // info (přidá jednotky, když hodnota existuje)
+        $this->addNode($info, 'Výška',  $this->normNum($height),  'cm');
+        $this->addNode($info, 'Šířka',  $this->normNum($width),   'cm');
+        $this->addNode($info, 'Hloubka',$this->normNum($depth),   'cm');
+        $this->addNode($info, 'Nosnost',$this->normNum($capacity),'kg');
+        $this->addNode($info, 'Materiál',$this->norm($material));
 
-        $this->addNode($logistic, 'HEIGHT', strtr($height,  [',' => '.']), '', false);
-        $this->addNode($logistic, 'WIDTH',  strtr($width,   [',' => '.']), '', false); 
-        $this->addNode($logistic, 'DEPTH',  strtr($depth,   [',' => '.']), '', false); 
-        $this->addNode($logistic, 'WEIGHT', strtr($weight,  [',' => '.']), '', false); 
+        // logistické hodnoty bez jednotky
+        $this->addNode($logistic, 'HEIGHT', $this->normNum($height), '', false);
+        $this->addNode($logistic, 'WIDTH',  $this->normNum($width),  '', false);
+        $this->addNode($logistic, 'DEPTH',  $this->normNum($depth),  '', false);
+        $this->addNode($logistic, 'WEIGHT', $this->normNum($weight), '', false);
 
 
         $infoNode = [];
@@ -74,31 +75,27 @@ final class ShoptetWriterFunc
         ];
     }
 
-    private function addNode(
-        array &$target, string $name, ?string $value, ?string $unit = null, bool $asAssoc = true
-    ): void {
-        // 1) pokud je to null → přeskočit
-        if ($value === null) {
+    private function addNode(array &$target, string $name, ?string $value, string $unit = '', bool $allowEmpty = false): void
+    {
+        if ($value === null || (!$allowEmpty && trim($value) === '')) {
             return;
         }
-
-        // 2) očistit a případně přeskočit i prázdno/„0“ (když nechceš 0 považovat za platnou)
-        $v = trim($value);
-        if ($v === '' || $v === '0' || $v === '0.0' || $v === '0.00') {
-            return;
-        }
-
-        if ($unit) {
-            $v .= ' ' . $unit;
-        }
-        if ($asAssoc){
-            $target[] = ['name' => $name, 'value' => str_replace(',', '.', $v)];
-        } else {    
-            $target[$name] = str_replace(',', '.', $v);
-        }
-
+        $target[] = [
+            'name'  => $name,
+            'value' => $unit !== '' ? ($value.' '.$unit) : $value,
+        ];
     }
 
+    private function norm(?string $v): ?string {
+    if ($v === null) return null;
+    $v = trim($v);
+    return $v === '' ? null : $v;
+    }
+
+    private function normNum(?string $v): ?string {
+        $v = $this->norm($v);
+        return $v === null ? null : strtr($v, [',' => '.']);
+    }
 
     public function getWhArray(int $stockMainWh, int $stockExtWh, $warehouse = null, $location = ''): array
     {

@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
   <meta charset="utf-8">
-  <title>{% block title %}BabyBeBare App{% endblock %}</title>
+  <title>{% block title %}BBB-App{% endblock %}</title>
   <meta name="author" content="Jan Sonbol">
   <meta name="description" content="{% block meta_desc %}{% endblock %}">
     {{ vite_entry_link_tags('app') }} {# CSS odkazy z Vite (prod) #}
@@ -12,11 +12,10 @@
 </head>
 <body>
   <header>
-    <h1>BabyBeBare App</h1>
+    <h1>BBB-App</h1>
     {% include 'partials/navigation.html.twig' %}
   </header>
   <main>{% block body %}{% endblock %}</main>
-
   {% block javascripts %}
     {{ vite_entry_script_tags('app') }}
   {% endblock %}

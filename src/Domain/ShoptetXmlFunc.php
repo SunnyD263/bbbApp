@@ -110,7 +110,7 @@ final class ShoptetXmlFunc
     {
         $log = $doc->createElement('LOGISTIC');
         foreach ($logistic as $key => $w) {
-            self::addText($doc, $log, $key, (string)$w);
+            self::addText($doc, $log, $w["name"], (string)$w["value"]);
         }
         $item->appendChild($log);
 
