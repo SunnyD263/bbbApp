@@ -76,8 +76,8 @@ final class BaaglShoptetWriter
     /** Příjem (navýšení skladu) k existujícímu produktu */
     public function inbound(array $shoptetRow, array $row, string $warehouse): ShoptetData
     {
-        $wh = $this->fn->getWhArray((int)($row['qty'] ?? 0), 'inbound', $shoptetRow);
-        $availability = $this->fn->getAvailability($wh['stockMainWh'], $wh['stockExtWh']);
+        $whStock =  $this->fn->getWhStock($shoptetRow["STOCK"]->WAREHOUSES);
+        $availability = $this->fn->getAvailability($whStock['stockMainWh'], $whStock['stockExtWh']);
 
         $d = new ShoptetData();
         $d->warehouses    = (array)$wh['result'];
@@ -89,8 +89,8 @@ final class BaaglShoptetWriter
     /** Update existující položky (ceny, sklady, parametry…) */
     public function update(array $shoptetRow, array $row, string $warehouse): ShoptetData
     {
-        $wh = $this->fn->getWhArray((int)($row['stav'] ?? 0), 'update', $shoptetRow);
-        $availability = $this->fn->getAvailability($wh['stockMainWh'], $wh['stockExtWh']);
+        $whStock =  $this->fn->getWhStock($shoptetRow["STOCK"]->WAREHOUSES);
+        $availability = $this->fn->getAvailability($whStock['stockMainWh'], $whStock['stockExtWh']);
         $vat = (int)$this->fn->getVAT($row['dph'] ?? null);
 
         // Mapování bloků ze Shoptetu
@@ -153,9 +153,9 @@ final class BaaglShoptetWriter
         $d->purchasePrice = isset($row['nakupni_cena']) ? (float)$row['nakupni_cena'] : null;
         $d->standardPrice = isset($row['cena']) ? (float)$row['cena'] : null;
 
-        $d->warehouses    = (array)$wh['result'];
-        $d->minimalAmount = isset($shoptetRow['STOCK']->MINIMAL_AMOUNT) ? (int)$shoptetRow['STOCK']->MINIMAL_AMOUNT : null;
-        $d->maximalAmount = isset($shoptetRow['STOCK']->MAXIMAL_AMOUNT) ? (int)$shoptetRow['STOCK']->MAXIMAL_AMOUNT : null;
+        $d->stock    = $this->fn->getWhField($whStock['stockMainWh'], $whStock['stockExtWh'], $warehouse, $whStock['locationWh']);
+        $d->minimalAmount  = strval($shoptetRow['STOCK']->MINIMAL_AMOUNT);
+        $d->maximalAmount= strval($shoptetRow['STOCK']->MAXIMAL_AMOUNT);
 
         $d->availabilityOut = (string)($shoptetRow['AVAILABILITY_OUT_OF_STOCK'] ?? 'Momentálně nedostupné');
         $d->availabilityIn  = (string)$availability['availability'];

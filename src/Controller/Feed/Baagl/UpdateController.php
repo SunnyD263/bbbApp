@@ -33,7 +33,7 @@ final class UpdateController extends AbstractController
 
         $xml = $feeds->fetch(FeedKind::BaaglAll);
         $items = $normalizer->normalize($xml->items,'update');
-        $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
+        $xmlShoptet = $feeds->fetch(FeedKind::ShoptetBaagl);
 
         // 1) Rozdělení        
         $m = $matcher->match($xmlShoptet,  $items->item);

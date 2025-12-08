@@ -119,13 +119,14 @@ final class ShoptetXmlFunc
     public static function appendStock(DOMDocument $doc, DOMElement $item, array $stock): void
     {
         $whs = $doc->createElement('WAREHOUSES');
-        foreach ($stock as $w) {
+
+        foreach ($stock["warehouses"]["warehouse"] as $w) {
             $wh = $doc->createElement('WAREHOUSE');
             self::addText($doc, $wh, 'NAME', $w['name'] ?? '');
             self::addText($doc, $wh, 'VALUE', isset($w['value']) ? (string)$w['value'] : '0');
             self::addText($doc, $wh, 'LOCATION', $w['location'] ?? '');
             $whs->appendChild($wh);
-        }
+        }  
         $item->appendChild($whs);
 
     }

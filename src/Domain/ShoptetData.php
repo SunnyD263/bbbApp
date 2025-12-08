@@ -63,8 +63,6 @@ final class ShoptetData
     // Sklady
     /** @var array<int, array{name:string,value:int,location?:string}> */
     public array $stock = [];
-    public ?int  $minimalAmount = null;
-    public ?int  $maximalAmount = null;
 
     // Dostupnost/viditelnost
     public string $availabilityOut = 'Momentálně nedostupné';

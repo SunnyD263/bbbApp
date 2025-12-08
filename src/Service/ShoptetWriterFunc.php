@@ -97,53 +97,80 @@ final class ShoptetWriterFunc
         return $v === null ? null : strtr($v, [',' => '.']);
     }
 
-    public function getWhArray(int $stockMainWh, int $stockExtWh, $warehouse = null, $location = ''): array
+    public function getWhStock($whStock){
+        if (isset($whStock->WAREHOUSE)){
+            $stockWH = $whStock->WAREHOUSE;
+            foreach($stockWH as $item){
+                if ($item->NAME == 'Výchozí sklad'){
+                  $stockMainWh = intval($item->VALUE);
+                  if(isset($item->LOCATION) && trim((string)$item->LOCATION) !== ''){
+                    $location = strval($item->LOCATION);
+                  } else {
+                    $location = '';
+                  }
+                } else {
+                  $stockExtWh = intval($item->VALUE);
+                }
+            }
+        return [
+            'stockMainWh' => $stockMainWh,
+            'stockExtWh' => $stockExtWh,
+            'locationWh' => $location
+        ];
+        }
+    }
+
+    public function getAvailability(int $stockMainWh, int $stockExtWh): array
+    {
+        $total = $stockMainWh + $stockExtWh;
+        if ($stockMainWh > 0){
+                $availability ='Skladem na prodejně';
+                $visibility = 'visible';   
+        } elseif ($total > 0) {
+                $availability ='Skladem ve skladu e-shopu';
+                $visibility = 'visible';
+        } else {
+                $availability ='Skladem na prodejně';
+                $visibility = 'hidden';
+        }
+
+        return [
+            'availability' => $availability,
+            'visibility' => $visibility
+        ];
+
+    }
+
+    public function getWhField(int $stockMainWh, int $stockExtWh, $warehouse = null, $location = '', $min = null, $max = null): array
     {
             if (isset($warehouse))
             {
-                $stock = [
+                $wh = [
                     ['name' => 'Výchozí sklad', 'value' => $stockMainWh, 'location' => $location],
                     ['name' => $warehouse, 'value' => $stockExtWh, 'location' => '']
                 ];
             } else {
-                    $stock = [
+                    $wh = [
                     ['name' => 'Výchozí sklad', 'value' => $stockMainWh,'location' => $location],
                 ];
             }
 
-        $total = $stockMainWh + $stockExtWh;
-        if ($stockMainWh > 0){
-            $deposit = [
-                'availability' => 'Skladem na prodejně', 
-                'visibility'   => 'visible',
-            ];        
-        } elseif ($total > 0) {
-            $deposit = [
-                'availability' => 'Skladem ve skladu e-shopu',
-                'visibility'   => 'visible',
-            ];
-        } else {
-            $deposit = [
-                'availability' => 'Skladem na prodejně',
-                'visibility'   => 'hidden',
-            ];
-        }
-
-        if ($stock instanceof SimpleXMLElement || is_array($stock)) {
-            foreach ($stock as $p) {
-                $stockNode[] = [
+        if ($wh instanceof SimpleXMLElement || is_array($wh)) {
+            foreach ($wh as $p) {
+                $warehouse = [
                     'name'  => (string)($p["name"] ?? ''),
                     'value' => (string)($p["value"] ?? ''),
                     'location' => (string)($p["location"] ?? ''),
                 ];
+                $warehouses['warehouse'][] = $warehouse; 
             }
         }
+    return [
+        'warehouses' => [
+            'warehouse' => $warehouses['warehouse'],
+        ],
+    ];
 
-    
-        return [
-            'stock' => $stockNode,
-            'deposit' => $deposit
-        ];
 
     }
 
