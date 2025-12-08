@@ -9,6 +9,7 @@ function getCategoryId(string $company, string $extId, string $name): ?array {
     };
 
 $sortId = 0;
+$priceVariant = 'basic';
 
 switch ($extId) {
 
@@ -239,9 +240,11 @@ switch ($extId) {
     case 160:  //Školní potřeby &gt; Aktovky / Školní batoh
     switch (true) {
         case mb_stripos($name, 'školní aktovka') !== false:
+            $priceVariant = 'Bag';
             $sortId = 1;
             break;
         case mb_stripos($name, 'školní batoh') !== false:
+            $priceVariant = 'Bag';
             $sortId = 2;
             break; 
     }
@@ -252,20 +255,25 @@ switch ($extId) {
     switch (true) {
         case mb_strpos($name, 'Školní batoh') !== false:
             $sortId = 1;
+            $priceVariant = 'Bag';
             break;
         case mb_stripos($name, 'předškolní') !== false:
         case mb_stripos($name, 'batoh buddy') !== false:
+            $priceVariant = 'Bag';
             $sortId = 2;
             break;
         case mb_stripos($name, 'zavinovací batoh') !== false:
+            $priceVariant = 'Bag';
             $sortId = 3;
             break;
         case mb_stripos($name, 'city batoh rpet') !== false:
         case mb_stripos($name, 'batoh earth') !== false:
         case mb_stripos($name, 'batoh coolmate') !== false:
+            $priceVariant = 'Bag';
             $sortId = 4;
             break;
         case mb_stripos($name, 'batoh tracker') !== false:
+            $priceVariant = 'Bag';
             $sortId = 5;
             break;
 
@@ -275,9 +283,11 @@ switch ($extId) {
     case 162:  //Školní potřeby &gt; Školní sety
     switch (true) {
         case mb_stripos($name, 'SET') !== false && mb_stripos($name, '3') !== false:
+            $priceVariant = 'Bag';
             $sortId = 1;
             break;
         case mb_stripos($name, 'SET') !== false && mb_stripos($name, '5') !== false:
+            $priceVariant = 'Bag';
             $sortId = 2;
             break;
     }
@@ -458,9 +468,11 @@ switch ($extId) {
             $sortId = 1;
             break;
         case mb_stripos($name, 'batoh Dash') !== false:
+            $priceVariant = 'Bag';
             $sortId = 2;
             break;
         case mb_stripos($name, 'batoh Roll') !== false:
+            $priceVariant = 'Bag';
             $sortId = 3;
             break;
     }
@@ -469,15 +481,18 @@ switch ($extId) {
     case 173:  //Školní potřeby &gt; Školní sety
     switch (true) {
         case mb_stripos($name, 'SET') !== false && mb_stripos($name, '2') !== false:
+            $priceVariant = 'Bag';
             $sortId = 1;
             break;
         case mb_stripos($name, 'SET') !== false && mb_stripos($name, '3') !== false:
+            $priceVariant = 'Bag';
             $sortId = 2;
             break;
         case mb_stripos($name, 'sáček') !== false:
             $sortId = 3;
             break;
         case mb_stripos($name, 'Školní aktovka Ergo Minecraft Blue') !== false:
+            $priceVariant = 'Bag';
             $sortId = 4;
             break;
         case mb_stripos($name, 'Školní penál jednopatrový Minecraft Blue') !== false:
@@ -492,7 +507,8 @@ switch ($extId) {
         if ((string)$category->COMPANY == $company && (string)$category->EXT_ID == $extId && (string)$category->SORT_ID == $sortId ) {
         return [
             'shoptet_id' => (string)$category->SHOPTET_ID,
-            'cat_name' => (string)$category->NAME
+            'cat_name' => (string)$category->NAME,
+            'price_variant' => (string)$priceVariant
         ];
         }
     }

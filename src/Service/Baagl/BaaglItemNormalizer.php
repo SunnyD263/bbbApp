@@ -8,7 +8,6 @@ use SimpleXMLElement;
 
 final class BaaglItemNormalizer
 {
-    private const PRICE_KOEFICIENT = 1.55;
 
     public function __construct(
         private readonly LegacyCategoryResolver $categoryResolver,
@@ -77,8 +76,17 @@ final class BaaglItemNormalizer
                     $this->setOrAddChild($item, 'category_id', $catId);
                     $this->setOrAddChild($item, 'category_name', $catName);
 
-                    // přepočet ceny
-                    $cena = round((float)($item->nakupni_cena ?? 0) * self::PRICE_KOEFICIENT, 0);
+                    switch($cat["price_variant"]){
+                            case "Bag":
+                                $margin = 1.35;
+                                break;
+
+                            default:
+                                $margin = 1.55;
+                    }
+
+
+                    $cena = round((float)($item->nakupni_cena ?? 0) * $margin, 0);
                     $this->setOrAddChild($item, 'cena', (string)$cena);
                 }
             }
