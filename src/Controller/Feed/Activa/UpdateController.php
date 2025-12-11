@@ -29,9 +29,9 @@ final class UpdateController extends AbstractController
         $form = $this->createForm(DefaultType::class);
         $form->handleRequest($request);
 
-        $xml = $feeds->fetch(FeedKind::BaaglAll);
+        $xml = $feeds->fetch(FeedKind::ActivaAll);
         $items = $normalizer->normalize($xml->items,'update');
-        $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
+        $xmlShoptet = $feeds->fetch(FeedKind::ShoptetActiva);
 
         // 1) Rozdělení        
         $m = $matcher->match($xmlShoptet,  $items->item);

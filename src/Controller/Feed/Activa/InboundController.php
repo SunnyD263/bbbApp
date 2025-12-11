@@ -23,7 +23,7 @@ final class InboundController extends AbstractController
     public function __construct(private string $xmlExportFeedPath) {}
 
     #[Route('/feed/activa/inbound', name: 'inbound_activa', methods: ['GET','POST'])]
-    public function inboundBaagl(
+    public function inboundActiva(
         Request $request,
         FeedProvider $feeds,
         EntityManagerInterface $em,

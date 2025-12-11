@@ -58,4 +58,4 @@
 /public/build/
 ###< pentatrion/vite-bundle ###
 .env
-
+.env.*
