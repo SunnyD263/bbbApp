@@ -19,21 +19,6 @@ final class ShoptetWriterFunc
      * ]
      */ 
 
-    public function getStock(int $stockMainWh, int $stockExtWh = null, string $mode): array
-    {
-            switch($mode)
-            {
-                case 'inbound':
-
-
-
-                default:
-            
-            }    
-
-        return  $result;
-    }
-
     public function getParameters(
         ?string $height = null,
         ?string $width  = null,

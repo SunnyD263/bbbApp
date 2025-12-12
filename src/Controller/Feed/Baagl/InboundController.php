@@ -91,7 +91,7 @@ final class InboundController extends AbstractController
                 return $this->redirectToRoute('inbound_baagl');
             }
 
-            $xmlShoptet = $feeds->fetch(FeedKind::Shoptet);
+            $xmlShoptet = $feeds->fetch(FeedKind::ShoptetBaagl);
             $m = $matcher->match($xmlShoptet, $sessionData["items"]);
 
             // 2) Vytvoření chybějících

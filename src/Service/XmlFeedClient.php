@@ -19,11 +19,14 @@ final class XmlFeedClient
 
     public function fetchSimpleXml(
         string $url,
+        ?array $authBasic = null,
         ?string $xsdPath = null,
         ?int $maxBytes = null,      // <- volitelné, přepíše default
         int $timeout = 10,
         int $retries = 2,
-        int $cacheTtl = 600
+        int $cacheTtl = 600,
+
+        
     ): \SimpleXMLElement {
         $maxBytes = $maxBytes ?? $this->maxBytesDefault;
 
@@ -31,11 +34,10 @@ final class XmlFeedClient
 
         $sourceKey = $this->isHttpUrl($url) ? $url : $this->resolveLocalPath($url);
         $cacheKey  = 'xml_payload_' . md5($sourceKey);
-
-        $payload = $this->cache->get($cacheKey, function ($item) use ($url, $timeout, $retries, $maxBytes, $xsdPath, $cacheTtl) {
+        $payload = $this->cache->get($cacheKey, function ($item) use ($url,$authBasic, $timeout, $retries, $maxBytes, $xsdPath, $cacheTtl) {
             $item->expiresAfter($cacheTtl);
 
-            $content = $this->downloadWithRetry($url, $timeout, $retries, $maxBytes);
+            $content = $this->downloadWithRetry($url, $authBasic, $timeout, $retries, $maxBytes);
 
             // bezpečnost + parse check (zkráceno)
             libxml_use_internal_errors(true);
@@ -68,7 +70,7 @@ final class XmlFeedClient
         return $xml;
     }
 
-    private function downloadWithRetry(string $url, int $timeout, int $retries, int $maxBytes): string
+    private function downloadWithRetry(string $url, ?array $authBasic, int $timeout, int $retries, int $maxBytes): string
     {
         // --- LOKÁLNÍ SOUBOR -----------------------------------------------------
         // Podpora file:/// i prosté cesty (relativní/absolutní, Windows i Unix)
@@ -102,16 +104,22 @@ final class XmlFeedClient
 
         // --- HTTP/HTTPS ---------------------------------------------------------
         $attempt = 0; $lastEx = null;
-
         while ($attempt <= $retries) {
             try {
-                $response = $this->http->request('GET', $url, [
+                $options = [
                     'timeout' => $timeout,
+                    'http_version' => '1.1',
                     'headers' => [
                         'Accept' => 'application/xml, text/xml, */*+xml;q=0.9',
-                        'User-Agent' => 'AppXmlClient/1.0',
+                        'User-Agent' => 'PostmanRuntime/7.40.0',
                     ],
-                ]);
+                ];
+
+                if ($authBasic !== null) {
+                    $options['auth_basic'] = $authBasic; // [user, pass]
+                }
+
+                $response = $this->http->request('GET', $url, $options);
 
                 $status = $response->getStatusCode(false);
                 if ($status < 200 || $status >= 300) {

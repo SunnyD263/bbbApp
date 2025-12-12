@@ -33,8 +33,6 @@ final class BaaglShoptetWriter
             
         );
 
-        // Sklady + dostupnost
-        $warehouseItem = $this->fn->getWhArray($stockMainWh, $stockExtWh , $warehouse, $location = '');
         // Obrázky do jednotného tvaru
         $images = $this->fn->mapFeedImages($row['obrazky']->obr ?? []);
 
@@ -56,19 +54,16 @@ final class BaaglShoptetWriter
         $d->purchasePrice  = isset($row['nakupni_cena']) ? (float)$row['nakupni_cena'] : null;
         $d->standardPrice  = isset($row['cena']) ? (float)$row['cena'] : null;
 
-        $d->stock = $warehouseItem["stock"];
+        $d->stock = $this->fn->getWhField($stockMainWh,  $stockExtWh , $warehouse, "");
         $d->minimalAmount =  null;
         $d->maximalAmount =  null;
         $d->infoParameters = $parametrs["infoParameter"];
         $d->logistic = $parametrs["logistic"];        
-        // $d->logHeight = isset($parametrs["logistic"]["HEIGHT"]) ? $parametrs["logistic"]["HEIGHT"] : null;
-        // $d->logWidth = isset($parametrs["logistic"]["WIDTH"]) ? $parametrs["logistic"]["WIDTH"] : null;
-        // $d->logDepth = isset($parametrs["logistic"]["DEPTH"]) ? $parametrs["logistic"]["DEPTH"] : null;
-        // $d->logWeight =isset($parametrs["logistic"]["WEIGHT"]) ? $parametrs["logistic"]["WEIGHT"] : null;
 
         // Dostupnost/viditelnost
-        $d->availabilityIn = (string)$warehouseItem["deposit"]["availability"];
-        $d->visibility     = (string)$warehouseItem["deposit"]["visibility"];
+        $availability = $this->fn->getAvailability($stockMainWh, $stockExtWh);
+        $d->availabilityIn= (string)$availability['availability'];
+        $d->visibility    = (string)$availability['visibility'];
 
         return $d;
     }
@@ -80,7 +75,9 @@ final class BaaglShoptetWriter
         $availability = $this->fn->getAvailability($whStock['stockMainWh'], $whStock['stockExtWh']);
 
         $d = new ShoptetData();
-        $d->warehouses    = (array)$wh['result'];
+        $d->stock    = $this->fn->getWhField($whStock['stockMainWh'], $whStock['stockExtWh'], $warehouse,'');
+        $d->minimalAmount =  null;
+        $d->maximalAmount =  null;
         $d->availabilityIn= (string)$availability['availability'];
         $d->visibility    = (string)$availability['visibility'];
         return $d;

@@ -20,7 +20,8 @@ parameters:
     activa.reg_num_path: '%kernel.project_dir%/%env(string:ACTIVA_REG_NUM_PATH)%'
     baagl.legacy_category_php: '%kernel.project_dir%/%env(string:BAAGL_LEGACY_CATEGORY_PHP)%'
     baagl.ignore_regnum_path: '%kernel.project_dir%/%env(string:BAAGL_IGNORE_REGNUM_PATH)%'
-    image_slots:         21
+    image_slots: 21
+
 
 services:
     # default configuration for services in *this* file
@@ -85,11 +86,11 @@ services:
 
     App\Service\FeedRegistry:
         calls:
-        - [ set, [ 'BaaglAll', '%env(string:FEED_BAAGL_ALL_URL)%' ] ]
-        - [ set, [ 'BaaglInstock', '%env(string:FEED_BAAGL_INSTOCK_URL)%' ] ]
-        - [ set, [ 'ShoptetBaagl', '%env(string:FEED_SHOPTET_URL_BAAGL)%' ] ]
-        - [ set, [ 'ShoptetActiva', '%env(string:FEED_SHOPTET_URL_ACTIVA)%' ] ]
-        - [ set, [ 'ActivaAll', '%env(string:FEED_ACTIVA_URL)%' ] ]
+        - [ set, [ 'BaaglAll', '%env(string:FEED_BAAGL_ALL_URL)%', 'Baagl' ] ]
+        - [ set, [ 'BaaglInstock', '%env(string:FEED_BAAGL_INSTOCK_URL)%', 'Baagl' ] ]
+        - [ set, [ 'ShoptetBaagl', '%env(string:FEED_SHOPTET_URL_BAAGL)%', 'Shoptet' ] ]
+        - [ set, [ 'ShoptetActiva', '%env(string:FEED_SHOPTET_URL_ACTIVA)%', 'Shoptet' ] ]
+        - [ set, [ 'ActivaAll', '%env(string:FEED_ACTIVA_URL)%', 'Activa' ] ]
         
     App\Service\FeedProvider:
         arguments:

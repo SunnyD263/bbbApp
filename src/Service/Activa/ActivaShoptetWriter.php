@@ -61,8 +61,6 @@ final class ActivaShoptetWriter
             $row->IMGURL_ALTERNATIVE ?? '',
         ]));
 
-        // Sklady + dostupnost
-        $warehouseItem = $this->fn->getWhArray($stockMainWh, $stockExtWh , $warehouse, $location = '');
         // Obrázky do jednotného tvaru
         $images = $this->fn->mapFeedImages($imagesUrl ?? []);
         $d = new ShoptetData();
@@ -84,14 +82,15 @@ final class ActivaShoptetWriter
         $d->purchasePrice  = isset($row->CUSTOMER_PRICE) ? (float)$row->CUSTOMER_PRICE : null;
         $d->standardPrice  = isset($row->PRICE) ? (float)$row->PRICE : null;
 
-        $d->stock = $warehouseItem["stock"];
+        $d->stock = $this->fn->getWhField($stockMainWh,  $stockExtWh , $warehouse, "");
         $d->minimalAmount =  null;
         $d->maximalAmount =  null;
         $d->infoParameters = $parametrs["infoParameter"];
         $d->logistic = (array) $parametrs["logistic"];  
 
-        $d->availabilityIn = (string)$warehouseItem["deposit"]["availability"];
-        $d->visibility     = (string)$warehouseItem["deposit"]["visibility"];
+        $availability = $this->fn->getAvailability($stockMainWh, $stockExtWh);
+        $d->availabilityIn= (string)$availability['availability'];
+        $d->visibility    = (string)$availability['visibility'];
 
         return $d;
     }
@@ -99,11 +98,14 @@ final class ActivaShoptetWriter
     /** Příjem (navýšení skladu) k existujícímu produktu */
     public function inbound(array $shoptetRow, array $row, string $warehouse): ShoptetData
     {
-        $wh = $this->fn->getWhArray((int)($row['qty'] ?? 0), 'inbound', $shoptetRow);
+
+        $wh = $this->fn->getWhStock($shoptetRow["STOCK"]->WAREHOUSES);
         $availability = $this->fn->getAvailability($wh['stockMainWh'], $wh['stockExtWh']);
 
         $d = new ShoptetData();
-        $d->warehouses    = (array)$wh['result'];
+        $d->stock    = $this->fn->getWhField($whStock['stockMainWh'], $whStock['stockExtWh'], $warehouse,'');
+        $d->minimalAmount =  null;
+        $d->maximalAmount =  null;
         $d->availabilityIn= (string)$availability['availability'];
         $d->visibility    = (string)$availability['visibility'];
         return $d;
@@ -112,9 +114,10 @@ final class ActivaShoptetWriter
     /** Update existující položky (ceny, sklady, parametry…) */
     public function update(array $shoptetRow, array $row, string $warehouse): ShoptetData
     {
-        $wh = $this->fn->getWhArray((int)($row['stav'] ?? 0), 'update', $shoptetRow);
-        $availability = $this->fn->getAvailability($wh['stockMainWh'], $wh['stockExtWh']);
+        $whStock =  $this->fn->getWhStock($shoptetRow["STOCK"]->WAREHOUSES);
+        $availability = $this->fn->getAvailability($whStock['stockMainWh'], $whStock['stockExtWh']);
         $vat = (int)$this->fn->getVAT($row['dph'] ?? null);
+
 
         // Mapování bloků ze Shoptetu
         $images        = $this->fn->mapShoptetImages($shoptetRow['IMAGES']->IMAGE ?? null, (string)($shoptetRow['CODE'] ?? ''), $this->logger);
@@ -176,7 +179,7 @@ final class ActivaShoptetWriter
         $d->purchasePrice = isset($row['nakupni_cena']) ? (float)$row['nakupni_cena'] : null;
         $d->standardPrice = isset($row['cena']) ? (float)$row['cena'] : null;
 
-        $d->warehouses    = (array)$wh['result'];
+        $d->stock    = $this->fn->getWhField($whStock['stockMainWh'], $whStock['stockExtWh'], $warehouse, $whStock['locationWh']);
         $d->minimalAmount = isset($shoptetRow['STOCK']->MINIMAL_AMOUNT) ? (int)$shoptetRow['STOCK']->MINIMAL_AMOUNT : null;
         $d->maximalAmount = isset($shoptetRow['STOCK']->MAXIMAL_AMOUNT) ? (int)$shoptetRow['STOCK']->MAXIMAL_AMOUNT : null;
 

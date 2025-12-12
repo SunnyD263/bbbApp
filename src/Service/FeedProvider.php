@@ -13,6 +13,15 @@ final class FeedProvider
     public function fetch(FeedKind $kind): \SimpleXMLElement
     {
         $url = $this->registry->url($kind);
-        return $this->client->fetchSimpleXml($url);
+        $source = $this->registry->source($kind);
+        $auth = null;
+        if ($source === 'Activa') {
+            $auth = [
+                $_ENV['FEED_ACTIVA_USER'] ?? null,
+                $_ENV['FEED_ACTIVA_PWD'] ?? null,
+            ];
+        }
+
+        return $this->client->fetchSimpleXml($url, $auth);
     }
 }

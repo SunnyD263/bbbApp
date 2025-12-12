@@ -34,7 +34,7 @@ final class UpdateController extends AbstractController
         $xmlShoptet = $feeds->fetch(FeedKind::ShoptetActiva);
 
         // 1) Rozdělení        
-        $m = $matcher->match($xmlShoptet,  $items->item);
+        $m = $matcher->match($xmlShoptet, $xml->SHOPITEM);
 
         // 3) Update existujících
         foreach ($m['matched'] as $code => $pair) {

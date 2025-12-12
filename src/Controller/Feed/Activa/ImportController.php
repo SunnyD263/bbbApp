@@ -29,14 +29,13 @@ final class ImportController extends AbstractController
     ): Response {
         $form = $this->createForm(DefaultType::class);
         $form->handleRequest($request);
-
         $xml = $feeds->fetch(FeedKind::ActivaAll);
         $items = $normalizer->normalize($xml,'import');
 
         $xmlShoptet = $feeds->fetch(FeedKind::ShoptetActiva);
 
         // 1) Rozdělení        
-        $m = $matcher->match($xmlShoptet,$items->SHOPITEM);
+        $m = $matcher->match($xmlShoptet,$xml->SHOPITEM);
         // 2) Vytvoření chybějících
         if (!empty($m['missing'])){
             foreach ($m['missing'] as $item) {            
